@@ -1,0 +1,28 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "Datasource",
+  "metadata": {
+    "name": "ds-scout-altinity-ch"
+  },
+  "spec": {
+    "access": "proxy",
+    "basicAuth": true,
+    "basicAuthUser": "base14",
+    "jsonData": {
+      "addCorsHeader": true,
+      "defaultDatabase": "base14",
+      "tlsSkipVerify": true,
+      "useCompression": true,
+      "usePOST": true
+    },
+    "name": "DS_ScoutAltCH",
+    "orgId": 1,
+    "secureJsonFields": {
+      "basicAuthPassword": true
+    },
+    "type": "vertamedia-clickhouse-datasource",
+    "typeLogoUrl": "public/plugins/vertamedia-clickhouse-datasource/img/altinity_logo.svg",
+    "uid": "ds-scout-altinity-ch",
+    "url": "http://clickhouse-clickhouse.clickhouse.svc.cluster.local:8123"
+  }
+}

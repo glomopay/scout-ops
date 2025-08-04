@@ -1,0 +1,1936 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "Dashboard",
+  "metadata": {
+    "folder": "d32cb8af-8902-445d-9963-833bee8ad500",
+    "name": "aemdv7mko7y0wd"
+  },
+  "spec": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations \u0026 Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "links": [],
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 3,
+        "panels": [],
+        "title": "Overview",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "blue",
+              "mode": "shades"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 20,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineWidth": 0.75,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 10,
+          "x": 0,
+          "y": 1
+        },
+        "id": 1,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "SELECT $timeSeries as t, count(distinct ResourceAttributes['k8s.pod.uid']) FROM $table \nWHERE $timeFilter \nAND ServiceName = 'k8s'\nAND MetricName = 'k8s.pod.phase'\nGROUP BY t ORDER BY t",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT (intDiv(toFloat64(TimeUnix) * 1000, (5 * 1000)) * (5 * 1000)) as t, count(distinct ResourceAttributes['k8s.pod.uid']) FROM base14.otel_metrics_gauge \nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3) \nAND ServiceName = 'k8'\nAND MetricName = 'k8s.pod.phase'\nGROUP BY t ORDER BY t",
+            "refId": "A",
+            "round": "0s",
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "Pods Running",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-BlPu"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 1,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "stepAfter",
+              "lineWidth": 0.75,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "log": 2,
+                "type": "log"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "1"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Pending"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "light-yellow",
+                    "mode": "shades"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "2"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Running"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-green",
+                    "mode": "shades"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "3"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Succeeded"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "light-blue",
+                    "mode": "shades"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "4"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Failed"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "light-red",
+                    "mode": "shades"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 10,
+          "x": 10,
+          "y": 1
+        },
+        "id": 5,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "SELECT $timeSeries t, Value, count(distinct(ResourceAttributes['k8s.pod.name']))\nFROM $table\nWHERE $timeFilter\nAND MetricName = 'k8s.pod.phase'\nAND ResourceAttributes['k8s.deployment.name'] == ''\nAND ResourceAttributes['k8s.statefulset.name'] == ''\nAND ResourceAttributes['k8s.daemonset.name'] == ''\nAND ResourceAttributes['k8s.namespace.name'] != 'kube-system'\nGROUP BY t, Value ORDER BY t",
+            "refId": "A",
+            "round": "0s",
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "Pods by Phase",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "1"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Pending"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "1"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "light-yellow",
+                    "mode": "shades"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "2"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Running"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "super-light-green",
+                    "mode": "shades"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "3"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Succeeded"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "light-blue",
+                    "mode": "shades"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "4"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Failed"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "light-red",
+                    "mode": "shades"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 4,
+          "x": 20,
+          "y": 1
+        },
+        "id": 6,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "SELECT $timeSeries t, Value as Phase, count(distinct(ResourceAttributes['k8s.pod.name'])) as Pods\nFROM $table\nWHERE $timeFilter\nAND MetricName = 'k8s.pod.phase'\nAND ResourceAttributes['k8s.deployment.name'] == ''\nAND ResourceAttributes['k8s.statefulset.name'] == ''\nAND ResourceAttributes['k8s.daemonset.name'] == ''\nAND ResourceAttributes['k8s.namespace.name'] != 'kube-system'\nGROUP BY t, Phase\nORDER BY t, Phase ASC",
+            "refId": "A",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "Pods by Phase (Current)",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic-by-name"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 20,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineWidth": 0.75,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 10,
+          "x": 0,
+          "y": 7
+        },
+        "id": 2,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "$columns(ResourceAttributes['k8s.namespace.name'] Namespace, count(*) as NoOfPods)\nFROM $table\nWHERE ServiceName = 'k8s'\nAND MetricName = 'k8s.pod.phase'\nGROUP BY t, Namespace ORDER BY t, NoOfPods",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT t, groupArray((Namespace, NoOfPods)) AS groupArr FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, ResourceAttributes['k8s.namespace.name'] Namespace, count(*) as NoOfPods FROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3) AND ServiceName = 'k8'\nAND MetricName = 'k8s.pod.phase' GROUP BY t, Namespace ORDER BY t, NoOfPods) GROUP BY t ORDER BY t",
+            "refId": "A",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "Pods running by Namespace",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-BlPu"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 15,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineWidth": 0.75,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 10,
+          "x": 10,
+          "y": 7
+        },
+        "id": 4,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "$columns(ResourceAttributes['k8s.container.name'] container, anyLast(Value) c)\nFROM $table\nWHERE $timeFilter\nAND MetricName = 'k8s.container.restarts'",
+            "refId": "A",
+            "round": "0s",
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "Total Restarts",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 15
+        },
+        "id": 8,
+        "panels": [],
+        "title": "Pods",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "light-blue",
+              "mode": "shades"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Field"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 356
+                },
+                {
+                  "id": "displayName",
+                  "value": "Pod"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Last *"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "mCPUs"
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "mode": "basic",
+                    "type": "gauge",
+                    "valueDisplayMode": "text"
+                  }
+                },
+                {
+                  "id": "custom.align",
+                  "value": "left"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 12,
+          "x": 0,
+          "y": 16
+        },
+        "id": 9,
+        "options": {
+          "cellHeight": "sm",
+          "footer": {
+            "countRows": false,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true,
+          "sortBy": []
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "$columns(ResourceAttributes['k8s.pod.name'] as pod, max(Value)*1000 as CPUUtilisation)\nFROM $table\nWHERE ServiceName = 'k8s'\nAND MetricName = 'k8s.pod.cpu.utilization'\nGROUP BY t, pod ORDER BY t, CPUUtilisation DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT t, groupArray((pod, CPUUtilisation)) AS groupArr FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, ResourceAttributes['k8s.pod.name'] as pod, max(Value) * 1000 as CPUUtilisation FROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3) AND ServiceName = 'k8'\nAND MetricName = 'k8s.pod.cpu.utilization' GROUP BY t, pod ORDER BY t, CPUUtilisation DESC) GROUP BY t ORDER BY t",
+            "refId": "A",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "CPU Intensive Pods",
+        "transformations": [
+          {
+            "id": "reduce",
+            "options": {
+              "includeTimeField": false,
+              "mode": "seriesToRows",
+              "reducers": [
+                "lastNotNull"
+              ]
+            }
+          },
+          {
+            "id": "sortBy",
+            "options": {
+              "fields": {},
+              "sort": [
+                {
+                  "desc": true,
+                  "field": "Last *"
+                }
+              ]
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "light-blue",
+              "mode": "shades"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Field"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 356
+                },
+                {
+                  "id": "displayName",
+                  "value": "Pod"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Last *"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Memory"
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "mode": "basic",
+                    "type": "gauge",
+                    "valueDisplayMode": "text"
+                  }
+                },
+                {
+                  "id": "custom.align",
+                  "value": "left"
+                },
+                {
+                  "id": "unit",
+                  "value": "decbytes"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 12,
+          "x": 12,
+          "y": 16
+        },
+        "id": 7,
+        "options": {
+          "cellHeight": "sm",
+          "footer": {
+            "countRows": false,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true,
+          "sortBy": []
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "$columns(ResourceAttributes['k8s.pod.name'] as pod, max(Value) as MemoryUsage)\nFROM $table\nWHERE ServiceName = 'k8s'\nAND MetricName = 'k8s.pod.memory.usage'\nGROUP BY t, pod ORDER BY t, MemoryUsage DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT t, groupArray((pod, MemoryUsage)) AS groupArr FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, ResourceAttributes['k8s.pod.name'] as pod, max(Value) as MemoryUsage FROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3) AND ServiceName = 'k8'\nAND MetricName = 'k8s.pod.memory.usage' GROUP BY t, pod ORDER BY t, MemoryUsage DESC) GROUP BY t ORDER BY t",
+            "refId": "A",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "Memory Intensive Pods",
+        "transformations": [
+          {
+            "id": "reduce",
+            "options": {
+              "includeTimeField": false,
+              "mode": "seriesToRows",
+              "reducers": [
+                "lastNotNull"
+              ]
+            }
+          },
+          {
+            "id": "sortBy",
+            "options": {
+              "fields": {},
+              "sort": [
+                {
+                  "desc": true,
+                  "field": "Max"
+                }
+              ]
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "light-blue",
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "mCPU",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": 3600000,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "log": 2,
+                "type": "log"
+              },
+              "showPoints": "never",
+              "spanNulls": 3600000,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 16,
+          "w": 12,
+          "x": 0,
+          "y": 30
+        },
+        "id": 10,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "$columns(ResourceAttributes['k8s.pod.name'] as pod, max(Value)*1000 as CPUUtilisation)\nFROM $table\nWHERE ServiceName = 'k8s'\nAND MetricName = 'k8s.pod.cpu.utilization'\nGROUP BY t, pod ORDER BY t, CPUUtilisation DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT t, groupArray((pod, CPUUtilisation)) AS groupArr FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, ResourceAttributes['k8s.pod.name'] as pod, max(Value) * 1000 as CPUUtilisation FROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3) AND ServiceName = 'k8'\nAND MetricName = 'k8s.pod.cpu.utilization' GROUP BY t, pod ORDER BY t, CPUUtilisation DESC) GROUP BY t ORDER BY t",
+            "refId": "A",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "CPU Intensive Pods",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "light-blue",
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": 3600000,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "log": 2,
+                "type": "log"
+              },
+              "showPoints": "never",
+              "spanNulls": 3600000,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "bytes"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 16,
+          "w": 12,
+          "x": 12,
+          "y": 30
+        },
+        "id": 11,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "$columns(ResourceAttributes['k8s.pod.name'] as pod, max(Value) as MemoryUsage)\nFROM $table\nWHERE ServiceName = 'k8s'\nAND MetricName = 'k8s.pod.memory.usage'\nGROUP BY t, pod ORDER BY t, MemoryUsage DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT t, groupArray((pod, MemoryUsage)) AS groupArr FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, ResourceAttributes['k8s.pod.name'] as pod, max(Value) as MemoryUsage FROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3) AND ServiceName = 'k8'\nAND MetricName = 'k8s.pod.memory.usage' GROUP BY t, pod ORDER BY t, MemoryUsage DESC) GROUP BY t ORDER BY t",
+            "refId": "A",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "Memory Intensive Pods",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 46
+        },
+        "id": 14,
+        "panels": [],
+        "title": "Containers",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "light-blue",
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "mCPU",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": 3600000,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "log": 2,
+                "type": "log"
+              },
+              "showPoints": "never",
+              "spanNulls": 3600000,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 11,
+          "w": 12,
+          "x": 0,
+          "y": 47
+        },
+        "id": 12,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "$columns(ResourceAttributes['k8s.container.name'] as pod, max(Value)*1000 as CPUUtilisation)\nFROM $table\nWHERE ServiceName = 'k8s'\nAND MetricName = 'container.cpu.utilization'\nGROUP BY t, pod ORDER BY t, CPUUtilisation DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT t, groupArray((pod, CPUUtilisation)) AS groupArr FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, ResourceAttributes['k8s.container.name'] as pod, max(Value) * 1000 as CPUUtilisation FROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3) AND ServiceName = 'k8'\nAND MetricName = 'container.cpu.utilization' GROUP BY t, pod ORDER BY t, CPUUtilisation DESC) GROUP BY t ORDER BY t",
+            "refId": "A",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "CPU Intensive Containers",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "light-blue",
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": 3600000,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "log": 2,
+                "type": "log"
+              },
+              "showPoints": "never",
+              "spanNulls": 3600000,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "bytes"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 11,
+          "w": 12,
+          "x": 12,
+          "y": 47
+        },
+        "id": 13,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "time_series",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "$columns(ResourceAttributes['k8s.container.name'] as pod, max(Value) as MemoryUsage)\nFROM $table\nWHERE ServiceName = 'k8s'\nAND MetricName = 'container.memory.usage'\nGROUP BY t, pod ORDER BY t, MemoryUsage DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT t, groupArray((pod, MemoryUsage)) AS groupArr FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, ResourceAttributes['k8s.container.name'] as pod, max(Value) as MemoryUsage FROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3) AND ServiceName = 'k8'\nAND MetricName = 'container.memory.usage' GROUP BY t, pod ORDER BY t, MemoryUsage DESC) GROUP BY t ORDER BY t",
+            "refId": "A",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "Memory Intensive Containers",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "ds-scout-altinity-ch"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "MemoryRSS"
+              },
+              "properties": [
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "gauge"
+                  }
+                },
+                {
+                  "id": "custom.align",
+                  "value": "left"
+                },
+                {
+                  "id": "unit",
+                  "value": "decbytes"
+                },
+                {
+                  "id": "displayName",
+                  "value": "RSS Memory"
+                },
+                {
+                  "id": "fieldMinMax",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "CPUUtilisation"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "CPU Utilization (milliCPU)"
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "mode": "gradient",
+                    "type": "gauge",
+                    "valueDisplayMode": "color"
+                  }
+                },
+                {
+                  "id": "custom.align",
+                  "value": "left"
+                },
+                {
+                  "id": "fieldMinMax",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "UsedDisk"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "decbytes"
+                },
+                {
+                  "id": "displayName",
+                  "value": "Disk Usage"
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "mode": "gradient",
+                    "type": "gauge",
+                    "valueDisplayMode": "color"
+                  }
+                },
+                {
+                  "id": "fieldMinMax",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "CPU Utilization"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 167
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Status"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "semi-dark-red",
+                          "index": 1,
+                          "text": "DOWN"
+                        },
+                        "1": {
+                          "color": "green",
+                          "index": 0,
+                          "text": "UP"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "color-text"
+                  }
+                },
+                {
+                  "id": "custom.width",
+                  "value": 71
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Container"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 223
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Disk Usage"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 125
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "RSS Memory"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 188
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Restarts"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 95
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Image"
+              },
+              "properties": [
+                {
+                  "id": "custom.inspect",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 15,
+          "w": 24,
+          "x": 0,
+          "y": 58
+        },
+        "id": 15,
+        "options": {
+          "cellHeight": "sm",
+          "footer": {
+            "countRows": false,
+            "enablePagination": true,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "RSS Memory"
+            }
+          ]
+        },
+        "pluginVersion": "11.3.0",
+        "targets": [
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "table",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "SELECT ResourceAttributes['k8s.container.name'] as Container,  anyLast(Value) Status\nFROM $table\nWHERE $timeFilter\nAND ServiceName = 'k8s'\nAND MetricName = 'k8s.container.ready'\nGROUP BY Container ORDER BY Status DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT ResourceAttributes['k8s.container.name'] as Container,  anyLast(Value) Status\nFROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3)\nAND ServiceName = 'k8'\nAND MetricName = 'k8s.container.ready'\nGROUP BY Container ORDER BY Status DESC",
+            "refId": "A",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          },
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "table",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "hide": false,
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "SELECT ResourceAttributes['k8s.container.name'] as Container, max(Value)*1000 as CPUUtilisation\nFROM $table\nWHERE $timeFilter\nAND ServiceName = 'k8s'\nAND MetricName = 'container.cpu.utilization'\nGROUP BY Container ORDER BY CPUUtilisation DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT ResourceAttributes['k8s.container.name'] as Container, max(Value)*1000 as CPUUtilisation\nFROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3)\nAND ServiceName = 'k8'\nAND MetricName = 'container.cpu.utilization'\nGROUP BY Container ORDER BY CPUUtilisation DESC",
+            "refId": "E",
+            "round": "0s",
+            "showFormattedSQL": false,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          },
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "table",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "hide": false,
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "SELECT ResourceAttributes['k8s.container.name'] as Container, max(Value) as MemoryRSS\nFROM $table\nWHERE $timeFilter\nAND ServiceName = 'k8s'\nAND MetricName = 'container.memory.rss'\nGROUP BY Container ORDER BY MemoryRSS DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT ResourceAttributes['k8s.container.name'] as Container, max(Value) as MemoryRSS\nFROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3)\nAND ServiceName = 'k8'\nAND MetricName = 'container.memory.rss'\nGROUP BY Container ORDER BY MemoryRSS DESC",
+            "refId": "B",
+            "round": "0s",
+            "showFormattedSQL": false,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          },
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "table",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "hide": false,
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "SELECT ResourceAttributes['k8s.container.name'] as Container, max(Value) as UsedDisk\nFROM $table\nWHERE $timeFilter\nAND ServiceName = 'k8s'\nAND MetricName = 'container.filesystem.usage'\nGROUP BY Container ORDER BY UsedDisk DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT ResourceAttributes['k8s.container.name'] as Container, max(Value) as UsedDisk\nFROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3)\nAND ServiceName = 'k8'\nAND MetricName = 'container.filesystem.usage'\nGROUP BY Container ORDER BY UsedDisk DESC",
+            "refId": "C",
+            "round": "0s",
+            "showFormattedSQL": false,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          },
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "table",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "hide": false,
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "SELECT ResourceAttributes['k8s.container.name'] as Container, max(Value) as Restarts\nFROM $table\nWHERE $timeFilter\nAND ServiceName = 'k8s'\nAND MetricName = 'k8s.container.restarts'\nGROUP BY Container ORDER BY Restarts DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT ResourceAttributes['k8s.container.name'] as Container, max(Value) as Restarts\nFROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3)\nAND ServiceName = 'k8'\nAND MetricName = 'k8s.container.restarts'\nGROUP BY Container ORDER BY Restarts DESC",
+            "refId": "D",
+            "round": "0s",
+            "showFormattedSQL": false,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          },
+          {
+            "adHocFilters": [],
+            "adHocValuesQuery": "",
+            "add_metadata": true,
+            "contextWindowSize": "10",
+            "database": "base14",
+            "datasource": {
+              "type": "vertamedia-clickhouse-datasource",
+              "uid": "ds-scout-altinity-ch"
+            },
+            "dateTimeColDataType": "TimeUnix",
+            "dateTimeType": "DATETIME64",
+            "editorMode": "sql",
+            "extrapolate": true,
+            "format": "table",
+            "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+            "hide": false,
+            "interval": "",
+            "intervalFactor": 1,
+            "query": "SELECT ResourceAttributes['k8s.container.name'] as Container, anyLast(ResourceAttributes['container.image.name']) Image\nFROM $table\nWHERE $timeFilter\nAND ServiceName = 'k8s'\nAND MetricName = 'k8s.container.ready'\nGROUP BY Container ORDER BY Image DESC",
+            "rawQuery": "/* grafana dashboard=K8s Pods Overview v2, user=9 */\nSELECT ResourceAttributes['k8s.container.name'] as Container, anyLast(ResourceAttributes['container.image.name']) Image\nFROM base14.otel_metrics_gauge\nWHERE TimeUnix \u003e= toDateTime64(1747715753, 3) AND TimeUnix \u003c= toDateTime64(1747719353, 3)\nAND ServiceName = 'k8'\nAND MetricName = 'k8s.container.ready'\nGROUP BY Container ORDER BY Image DESC",
+            "refId": "F",
+            "round": "0s",
+            "showFormattedSQL": true,
+            "skip_comments": true,
+            "table": "otel_metrics_gauge",
+            "useWindowFuncForMacros": true
+          }
+        ],
+        "title": "Containers",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "Container",
+              "mode": "outer"
+            }
+          }
+        ],
+        "type": "table"
+      }
+    ],
+    "preload": false,
+    "schemaVersion": 40,
+    "tags": [],
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "K8s Pods Overview",
+    "uid": "aemdv7mko7y0wd",
+    "weekStart": ""
+  }
+}
