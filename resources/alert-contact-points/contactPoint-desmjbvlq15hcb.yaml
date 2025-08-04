@@ -1,0 +1,10 @@
+apiVersion: grizzly.grafana.com/v1alpha1
+kind: AlertContactPoint
+metadata:
+    name: desmjbvlq15hcb
+spec:
+    name: email receiver
+    settings:
+        addresses: <example@email.com>
+    type: email
+    uid: desmjbvlq15hcb

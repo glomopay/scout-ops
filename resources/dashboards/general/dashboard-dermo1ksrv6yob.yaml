@@ -1,0 +1,645 @@
+apiVersion: grizzly.grafana.com/v1alpha1
+kind: Dashboard
+metadata:
+    folder: general
+    name: dermo1ksrv6yob
+spec:
+    annotations:
+        list:
+            - builtIn: 1
+              datasource:
+                type: grafana
+                uid: -- Grafana --
+              enable: true
+              hide: true
+              iconColor: rgba(0, 211, 255, 1)
+              name: Annotations & Alerts
+              type: dashboard
+    editable: true
+    fiscalYearStartMonth: 0
+    graphTooltip: 1
+    links: []
+    panels:
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic-by-name
+                    seriesBy: min
+                custom:
+                    axisBorderShow: false
+                    axisCenteredZero: false
+                    axisColorMode: text
+                    axisLabel: ""
+                    axisPlacement: auto
+                    barAlignment: 0
+                    barWidthFactor: 0.6
+                    drawStyle: line
+                    fillOpacity: 20
+                    gradientMode: opacity
+                    hideFrom:
+                        legend: false
+                        tooltip: false
+                        viz: false
+                    insertNulls: 3.6e+06
+                    lineInterpolation: smooth
+                    lineWidth: 0.75
+                    pointSize: 5
+                    scaleDistribution:
+                        type: linear
+                    showPoints: never
+                    spanNulls: 3.6e+06
+                    stacking:
+                        group: A
+                        mode: none
+                    thresholdsStyle:
+                        mode: "off"
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+            overrides: []
+          gridPos:
+            h: 9
+            w: 12
+            x: 0
+            "y": 0
+          id: 1
+          options:
+            legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: true
+            tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          pluginVersion: 12.0.2+security-01
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "$perSecondColumns(Attributes['hostname'],  Value) from $table \nwhere ServiceName = $svc\nAND MetricName = 'chi_clickhouse_event_Query'\nAND Attributes['hostname'] in ($host)\n"
+              rawQuery: "/* grafana dashboard='Clickhouse Health', user='2' */\nSELECT t, groupArray((perSecondColumns, max_0_PerSecond)) AS groupArr FROM ( SELECT t, perSecondColumns, if((max_0 - lagInFrame(max_0,1,0) OVER ()) < 0 OR lagInFrame(perSecondColumns,1,perSecondColumns) OVER () != perSecondColumns, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / (t/1000 - lagInFrame(t/1000,1,0) OVER ())) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (30 * 1000)) * (30 * 1000)) AS t, Attributes['hostname'] AS perSecondColumns, max(Value) AS max_0 from base14.otel_metrics_sum \nWHERE TimeUnix >= toDateTime64(1753099956,3) AND TimeUnix <= toDateTime64(1753121556,3) AND ServiceName = 'aps1-clickhouse'\nAND MetricName = 'chi_clickhouse_event_Query'\nAND Attributes['hostname'] in ('chi-clickhouse-ch-01-0-0.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-1.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-2.clickhouse.svc.cluster.local') GROUP BY t, perSecondColumns ORDER BY perSecondColumns, t)) GROUP BY t ORDER BY t"
+              refId: A
+              round: 0s
+              showFormattedSQL: true
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+          title: Queries Per Second
+          type: timeseries
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic-by-name
+                    seriesBy: min
+                custom:
+                    axisBorderShow: false
+                    axisCenteredZero: false
+                    axisColorMode: text
+                    axisLabel: ""
+                    axisPlacement: auto
+                    barAlignment: 0
+                    barWidthFactor: 0.6
+                    drawStyle: line
+                    fillOpacity: 20
+                    gradientMode: opacity
+                    hideFrom:
+                        legend: false
+                        tooltip: false
+                        viz: false
+                    insertNulls: 3.6e+06
+                    lineInterpolation: smooth
+                    lineWidth: 0.75
+                    pointSize: 5
+                    scaleDistribution:
+                        log: 2
+                        type: log
+                    showPoints: never
+                    spanNulls: 3.6e+06
+                    stacking:
+                        group: A
+                        mode: none
+                    thresholdsStyle:
+                        mode: "off"
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                unit: µs
+            overrides: []
+          gridPos:
+            h: 9
+            w: 12
+            x: 12
+            "y": 0
+          id: 2
+          options:
+            legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: true
+            tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          pluginVersion: 12.0.2+security-01
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "$increaseColumns(Attributes['hostname'],  Value) from $table \nwhere ServiceName = $svc\nAND MetricName = 'chi_clickhouse_event_QueryTimeMicroseconds'\nAND Attributes['hostname'] in ($host)\n"
+              rawQuery: "/* grafana dashboard='Clickhouse Health', user='2' */\nSELECT t, groupArray((increaseColumns, max_0_Increase)) AS groupArr FROM ( SELECT t, increaseColumns, if((max_0 - lagInFrame(max_0,1,0) OVER ()) < 0 OR lagInFrame(increaseColumns,1,increaseColumns) OVER () != increaseColumns, 0, max_0 - lagInFrame(max_0,1,0) OVER ()) AS max_0_Increase FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (20 * 1000)) * (20 * 1000)) AS t, Attributes['hostname'] AS increaseColumns, max(Value) AS max_0 from base14.otel_metrics_sum \nWHERE TimeUnix >= toDateTime64(1753099956,3) AND TimeUnix <= toDateTime64(1753121556,3) AND ServiceName = 'aps1-clickhouse'\nAND MetricName = 'chi_clickhouse_event_QueryTimeMicroseconds'\nAND Attributes['hostname'] in ('chi-clickhouse-ch-01-0-0.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-1.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-2.clickhouse.svc.cluster.local') GROUP BY t, increaseColumns ORDER BY increaseColumns, t)) GROUP BY t ORDER BY t"
+              refId: A
+              round: 0s
+              showHelp: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+          title: Query Time
+          type: timeseries
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic-by-name
+                    seriesBy: min
+                custom:
+                    axisBorderShow: false
+                    axisCenteredZero: false
+                    axisColorMode: text
+                    axisLabel: ""
+                    axisPlacement: auto
+                    barAlignment: 0
+                    barWidthFactor: 0.6
+                    drawStyle: line
+                    fillOpacity: 20
+                    gradientMode: opacity
+                    hideFrom:
+                        legend: false
+                        tooltip: false
+                        viz: false
+                    insertNulls: 3.6e+06
+                    lineInterpolation: smooth
+                    lineWidth: 0.75
+                    pointSize: 5
+                    scaleDistribution:
+                        type: linear
+                    showPoints: never
+                    spanNulls: 3.6e+06
+                    stacking:
+                        group: A
+                        mode: none
+                    thresholdsStyle:
+                        mode: "off"
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+            overrides: []
+          gridPos:
+            h: 9
+            w: 12
+            x: 0
+            "y": 9
+          id: 3
+          options:
+            legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: true
+            tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          pluginVersion: 12.0.2+security-01
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "$perSecondColumns(Attributes['hostname'],  Value) from $table \nwhere ServiceName = $svc\nAND MetricName = 'chi_clickhouse_event_Merge'\nAND Attributes['hostname'] in ($host)\n"
+              rawQuery: "/* grafana dashboard='Clickhouse Health', user='2' */\nSELECT t, groupArray((perSecondColumns, max_0_PerSecond)) AS groupArr FROM ( SELECT t, perSecondColumns, if((max_0 - lagInFrame(max_0,1,0) OVER ()) < 0 OR lagInFrame(perSecondColumns,1,perSecondColumns) OVER () != perSecondColumns, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / (t/1000 - lagInFrame(t/1000,1,0) OVER ())) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (20 * 1000)) * (20 * 1000)) AS t, Attributes['hostname'] AS perSecondColumns, max(Value) AS max_0 from base14.otel_metrics_sum \nWHERE TimeUnix >= toDateTime64(1753099956,3) AND TimeUnix <= toDateTime64(1753121556,3) AND ServiceName = 'aps1-clickhouse'\nAND MetricName = 'chi_clickhouse_event_Merge'\nAND Attributes['hostname'] in ('chi-clickhouse-ch-01-0-0.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-1.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-2.clickhouse.svc.cluster.local') GROUP BY t, perSecondColumns ORDER BY perSecondColumns, t)) GROUP BY t ORDER BY t"
+              refId: A
+              round: 0s
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+          title: Merges Per Second
+          type: timeseries
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic-by-name
+                    seriesBy: min
+                custom:
+                    axisBorderShow: false
+                    axisCenteredZero: false
+                    axisColorMode: text
+                    axisLabel: ""
+                    axisPlacement: auto
+                    barAlignment: 0
+                    barWidthFactor: 0.6
+                    drawStyle: line
+                    fillOpacity: 20
+                    gradientMode: opacity
+                    hideFrom:
+                        legend: false
+                        tooltip: false
+                        viz: false
+                    insertNulls: 3.6e+06
+                    lineInterpolation: smooth
+                    lineWidth: 0.75
+                    pointSize: 5
+                    scaleDistribution:
+                        log: 2
+                        type: log
+                    showPoints: never
+                    spanNulls: 3.6e+06
+                    stacking:
+                        group: A
+                        mode: none
+                    thresholdsStyle:
+                        mode: "off"
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                unit: short
+            overrides: []
+          gridPos:
+            h: 9
+            w: 12
+            x: 12
+            "y": 9
+          id: 4
+          maxDataPoints: 200
+          options:
+            legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: true
+            tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          pluginVersion: 12.0.2+security-01
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "$increaseColumns(Attributes['hostname'],  Value) from $table \nwhere ServiceName = $svc\nAND MetricName = 'chi_clickhouse_event_SelectedRows'\nAND Attributes['hostname'] in ($host)\n"
+              rawQuery: "/* grafana dashboard='Clickhouse Health', user='2' */\nSELECT t, groupArray((increaseColumns, max_0_Increase)) AS groupArr FROM ( SELECT t, increaseColumns, if((max_0 - lagInFrame(max_0,1,0) OVER ()) < 0 OR lagInFrame(increaseColumns,1,increaseColumns) OVER () != increaseColumns, 0, max_0 - lagInFrame(max_0,1,0) OVER ()) AS max_0_Increase FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (120 * 1000)) * (120 * 1000)) AS t, Attributes['hostname'] AS increaseColumns, max(Value) AS max_0 from base14.otel_metrics_sum \nWHERE TimeUnix >= toDateTime64(1753099956,3) AND TimeUnix <= toDateTime64(1753121556,3) AND ServiceName = 'aps1-clickhouse'\nAND MetricName = 'chi_clickhouse_event_SelectedRows'\nAND Attributes['hostname'] in ('chi-clickhouse-ch-01-0-0.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-1.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-2.clickhouse.svc.cluster.local') GROUP BY t, increaseColumns ORDER BY increaseColumns, t)) GROUP BY t ORDER BY t"
+              refId: A
+              round: 0s
+              showHelp: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+          title: Selected Rows
+          type: timeseries
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic-by-name
+                    seriesBy: min
+                custom:
+                    axisBorderShow: false
+                    axisCenteredZero: false
+                    axisColorMode: text
+                    axisLabel: ""
+                    axisPlacement: auto
+                    barAlignment: 0
+                    barWidthFactor: 0.6
+                    drawStyle: line
+                    fillOpacity: 20
+                    gradientMode: opacity
+                    hideFrom:
+                        legend: false
+                        tooltip: false
+                        viz: false
+                    insertNulls: 3.6e+06
+                    lineInterpolation: smooth
+                    lineWidth: 0.75
+                    pointSize: 5
+                    scaleDistribution:
+                        type: linear
+                    showPoints: never
+                    spanNulls: 3.6e+06
+                    stacking:
+                        group: A
+                        mode: none
+                    thresholdsStyle:
+                        mode: "off"
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                unit: bytes
+            overrides: []
+          gridPos:
+            h: 9
+            w: 12
+            x: 0
+            "y": 18
+          id: 5
+          options:
+            legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: true
+            tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          pluginVersion: 12.0.2+security-01
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "$columns(Attributes['hostname'] Host,  max(Value) DiskFreeBytes) from $table \nwhere ServiceName = $svc\nAND MetricName = 'chi_clickhouse_metric_DiskFreeBytes'\nAND Attributes['hostname'] in ($host)\n"
+              rawQuery: "/* grafana dashboard='Clickhouse Health', user='2' */\nSELECT t, groupArray((Host, DiskFreeBytes)) AS groupArr FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (20 * 1000)) * (20 * 1000)) AS t, Attributes['hostname'] Host, max(Value) DiskFreeBytes from base14.otel_metrics_gauge \nWHERE TimeUnix >= toDateTime64(1753099956,3) AND TimeUnix <= toDateTime64(1753121556,3) AND ServiceName = 'aps1-clickhouse'\nAND MetricName = 'chi_clickhouse_metric_DiskFreeBytes'\nAND Attributes['hostname'] in ('chi-clickhouse-ch-01-0-0.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-1.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-2.clickhouse.svc.cluster.local') GROUP BY t, Host ORDER BY t, Host) GROUP BY t ORDER BY t"
+              refId: A
+              round: 0s
+              skip_comments: true
+              table: otel_metrics_gauge
+              useWindowFuncForMacros: true
+          title: Free Disk
+          type: timeseries
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic-by-name
+                    seriesBy: min
+                custom:
+                    axisBorderShow: false
+                    axisCenteredZero: false
+                    axisColorMode: text
+                    axisLabel: ""
+                    axisPlacement: auto
+                    barAlignment: 0
+                    barWidthFactor: 0.6
+                    drawStyle: line
+                    fillOpacity: 20
+                    gradientMode: opacity
+                    hideFrom:
+                        legend: false
+                        tooltip: false
+                        viz: false
+                    insertNulls: 3.6e+06
+                    lineInterpolation: smooth
+                    lineWidth: 0.75
+                    pointSize: 5
+                    scaleDistribution:
+                        type: linear
+                    showPoints: never
+                    spanNulls: 3.6e+06
+                    stacking:
+                        group: A
+                        mode: none
+                    thresholdsStyle:
+                        mode: "off"
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                unit: bytes
+            overrides: []
+          gridPos:
+            h: 9
+            w: 12
+            x: 12
+            "y": 18
+          id: 6
+          options:
+            legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: true
+            tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          pluginVersion: 12.0.2+security-01
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "$columns(Attributes['hostname'] Host,  max(Value) DiskFreeBytes) from $table \nwhere ServiceName = $svc\nAND MetricName = 'chi_clickhouse_metric_OSMemoryAvailable'\nAND Attributes['hostname'] in ($host)\n"
+              rawQuery: "/* grafana dashboard='Clickhouse Health', user='2' */\nSELECT t, groupArray((Host, DiskFreeBytes)) AS groupArr FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (20 * 1000)) * (20 * 1000)) AS t, Attributes['hostname'] Host, max(Value) DiskFreeBytes from base14.otel_metrics_gauge \nWHERE TimeUnix >= toDateTime64(1753099956,3) AND TimeUnix <= toDateTime64(1753121556,3) AND ServiceName = 'aps1-clickhouse'\nAND MetricName = 'chi_clickhouse_metric_OSMemoryAvailable'\nAND Attributes['hostname'] in ('chi-clickhouse-ch-01-0-0.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-1.clickhouse.svc.cluster.local','chi-clickhouse-ch-01-0-2.clickhouse.svc.cluster.local') GROUP BY t, Host ORDER BY t, Host) GROUP BY t ORDER BY t"
+              refId: A
+              round: 0s
+              skip_comments: true
+              table: otel_metrics_gauge
+              useWindowFuncForMacros: true
+          title: OS Memory Available
+          type: timeseries
+    preload: false
+    schemaVersion: 41
+    tags: []
+    templating:
+        list:
+            - current:
+                text: aps1-clickhouse
+                value: aps1-clickhouse
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              definition: "SELECT distinct ServiceName from $table \nwhere $timeFilter\nand ServiceName like '%-clickhouse'\nand MetricName like 'chi_clickhouse_event_SelectedRows'"
+              description: ""
+              label: Cluster
+              name: svc
+              options: []
+              query:
+                adHocFilters: []
+                adHocValuesQuery: ""
+                add_metadata: true
+                contextWindowSize: "10"
+                database: base14
+                datasourceMode: Variable
+                dateTimeColDataType: TimeUnix
+                dateTimeType: DATETIME64
+                editorMode: sql
+                extrapolate: true
+                format: time_series
+                formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+                interval: ""
+                intervalFactor: 1
+                nullifySparse: false
+                query: "SELECT distinct ServiceName from $table \nwhere $timeFilter\nand ServiceName like '%-clickhouse'\nand MetricName like 'chi_clickhouse_event_SelectedRows'"
+                rawQuery: "/* grafana dashboard='Clickhouse Health', user='2' */\nSELECT distinct ServiceName from base14.otel_metrics_sum \nwhere TimeUnix >= toDateTime64(1752232879,3) AND TimeUnix <= toDateTime64(1752254479,3)\nand ServiceName like '%-clickhouse'\nand MetricName like 'chi_clickhouse_event_SelectedRows'"
+                round: 0s
+                skip_comments: true
+                table: otel_metrics_sum
+                useWindowFuncForMacros: true
+              refresh: 1
+              regex: ""
+              type: query
+            - current:
+                text: All
+                value:
+                    - $__all
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              definition: |-
+                SELECT distinct Attributes['hostname'] from $table where $timeFilter
+                AND MetricName = 'chi_clickhouse_event_Query'
+                AND ServiceName = $svc
+              description: Clickhouse Host
+              includeAll: true
+              label: Host
+              multi: true
+              name: host
+              options: []
+              query:
+                adHocFilters: []
+                adHocValuesQuery: ""
+                add_metadata: true
+                contextWindowSize: "10"
+                database: base14
+                datasourceMode: Variable
+                dateTimeColDataType: TimeUnix
+                dateTimeType: DATETIME64
+                editorMode: sql
+                extrapolate: true
+                format: time_series
+                formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+                interval: ""
+                intervalFactor: 1
+                nullifySparse: false
+                query: |-
+                    SELECT distinct Attributes['hostname'] from $table where $timeFilter
+                    AND MetricName = 'chi_clickhouse_event_Query'
+                    AND ServiceName = $svc
+                rawQuery: |-
+                    /* grafana dashboard='Clickhouse Health', user='2' */
+                    SELECT distinct Attributes['hostname'] from base14.otel_metrics_sum where TimeUnix >= toDateTime64(1752234453,3) AND TimeUnix <= toDateTime64(1752256053,3)
+                    AND MetricName = 'chi_clickhouse_event_Query'
+                    AND ServiceName = 'aps1-clickhouse'
+                round: 0s
+                skip_comments: true
+                table: otel_metrics_sum
+                useWindowFuncForMacros: true
+              refresh: 1
+              regex: ""
+              type: query
+    time:
+        from: now-1h
+        to: now
+    timepicker: {}
+    timezone: browser
+    title: Clickhouse Health Board
+    uid: dermo1ksrv6yob

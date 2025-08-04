@@ -1,0 +1,35 @@
+apiVersion: grizzly.grafana.com/v1alpha1
+kind: Datasource
+metadata:
+    name: ds-scout-ch
+spec:
+    access: proxy
+    basicAuth: true
+    isDefault: true
+    jsonData:
+        addCorsHeader: true
+        defaultDatabase: base14
+        logs:
+            defaultDatabase: base14
+            defaultTable: otel_logs
+            otelEnabled: true
+            otelVersion: latest
+        port: 9000
+        protocol: native
+        server: clickhouse-clickhouse.clickhouse.svc.cluster.local
+        tlsSkipVerify: true
+        traces:
+            defaultDatabase: base14
+            defaultTable: otel_traces
+            otelEnabled: true
+            otelVersion: latest
+        useCompression: true
+        usePOST: true
+        username: base14
+    name: DS_ScoutCH
+    orgId: 1
+    secureJsonFields:
+        password: true
+    type: grafana-clickhouse-datasource
+    typeLogoUrl: public/plugins/grafana-clickhouse-datasource/img/logo.svg
+    uid: ds-scout-ch

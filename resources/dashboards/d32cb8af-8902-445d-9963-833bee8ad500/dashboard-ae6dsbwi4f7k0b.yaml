@@ -1,0 +1,494 @@
+apiVersion: grizzly.grafana.com/v1alpha1
+kind: Dashboard
+metadata:
+    folder: d32cb8af-8902-445d-9963-833bee8ad500
+    name: ae6dsbwi4f7k0b
+spec:
+    annotations:
+        list:
+            - builtIn: 1
+              datasource:
+                type: grafana
+                uid: -- Grafana --
+              enable: true
+              hide: true
+              iconColor: rgba(0, 211, 255, 1)
+              name: Annotations & Alerts
+              type: dashboard
+    editable: true
+    fiscalYearStartMonth: 0
+    graphTooltip: 0
+    links: []
+    panels:
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: thresholds
+                custom:
+                    align: left
+                    cellOptions:
+                        type: auto
+                    inspect: true
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                          value: null
+                        - color: red
+                          value: 80
+            overrides: []
+          gridPos:
+            h: 8
+            w: 15
+            x: 0
+            "y": 0
+          id: 3
+          options:
+            cellHeight: sm
+            footer:
+                countRows: false
+                fields: ""
+                reducer:
+                    - sum
+                show: false
+            showHeader: true
+            sortBy:
+                - desc: true
+                  displayName: rows
+          pluginVersion: 11.3.0
+          targets:
+            - adHocFilters: []
+              add_metadata: true
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              editorMode: builder
+              extrapolate: true
+              format: table
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              query: |-
+                select parts.table,
+                       parts.rows,
+                       columns.compressed_size,
+                       columns.uncompressed_size,
+                       columns.ratio
+                from (
+                         select table,
+                                formatReadableSize(sum(data_uncompressed_bytes))          AS uncompressed_size,
+                                formatReadableSize(sum(data_compressed_bytes))            AS compressed_size,
+                                sum(data_compressed_bytes) / sum(data_uncompressed_bytes) AS ratio
+                         from clusterAllReplicas(default, system.columns)
+                         where database = currentDatabase()
+                         group by table
+                         ) columns
+                         right join (
+                    select table,
+                           sum(rows)                                            as rows,
+                           max(modification_time)                               as latest_modification,
+                           formatReadableSize(sum(bytes))                       as disk_size,
+                           formatReadableSize(sum(primary_key_bytes_in_memory)) as primary_keys_size,
+                           any(engine)                                          as engine,
+                           sum(bytes)                                           as bytes_size
+                    from clusterAllReplicas(default, system.parts)
+                    where active and database = currentDatabase()
+                    group by database, table
+                    ) parts on columns.table = parts.table
+                order by parts.bytes_size desc
+              rawQuery: |-
+                /* grafana dashboard=Basics, user=1 */
+                select parts.table,
+                       parts.rows,
+                       columns.compressed_size,
+                       columns.uncompressed_size,
+                       columns.ratio
+                from (
+                         select table,
+                                formatReadableSize(sum(data_uncompressed_bytes))          AS uncompressed_size,
+                                formatReadableSize(sum(data_compressed_bytes))            AS compressed_size,
+                                sum(data_compressed_bytes) / sum(data_uncompressed_bytes) AS ratio
+                         from clusterAllReplicas(default,system.columns)
+                         where database = currentDatabase()
+                         group by table
+                         ) columns
+                         right join (
+                    select table,
+                           sum(rows)                                            as rows,
+                           max(modification_time)                               as latest_modification,
+                           formatReadableSize(sum(bytes))                       as disk_size,
+                           formatReadableSize(sum(primary_key_bytes_in_memory)) as primary_keys_size,
+                           any(engine)                                          as engine,
+                           sum(bytes)                                           as bytes_size
+                    from clusterAllReplicas(default, system.parts)
+                    where active and database = currentDatabase()
+                    group by database, table
+                    ) parts on columns.table = parts.table
+                order by parts.bytes_size desc
+              refId: A
+              round: 0s
+              showFormattedSQL: true
+              skip_comments: true
+          title: Table sizes (combined for Cluster)
+          type: table
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: thresholds
+                custom:
+                    align: auto
+                    cellOptions:
+                        type: auto
+                    inspect: false
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                          value: null
+                        - color: red
+                          value: 80
+            overrides: []
+          gridPos:
+            h: 8
+            w: 9
+            x: 15
+            "y": 0
+          id: 4
+          options:
+            cellHeight: sm
+            footer:
+                countRows: false
+                fields: ""
+                reducer:
+                    - sum
+                show: false
+            showHeader: false
+          pluginVersion: 11.3.0
+          targets:
+            - adHocFilters: []
+              add_metadata: true
+              database: default
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: Timestamp
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: table
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              query: SELECT count() as Logs FROM $table WHERE $timeFilter
+              rawQuery: |-
+                /* grafana dashboard=Basics, user=1 */
+                SELECT count() as Log FROM default.otel_logs WHERE Timestamp >= toDateTime64(1734615033, 3) AND Timestamp <= toDateTime64(1734615333, 3)
+              refId: A
+              round: 0s
+              skip_comments: true
+              table: otel_logs
+            - adHocFilters: []
+              add_metadata: true
+              database: default
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: table
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              query: 'SELECT count() as Metrics  FROM $table WHERE $timeFilter '
+              rawQuery: |-
+                /* grafana dashboard=Basics, user=1 */
+                SELECT count() as Metric  FROM default.otel_metrics_gauge WHERE TimeUnix >= toDateTime64(1734615033, 3) AND TimeUnix <= toDateTime64(1734615333, 3)
+              refId: B
+              round: 0s
+              skip_comments: true
+              table: otel_metrics_gauge
+            - adHocFilters: []
+              add_metadata: true
+              database: default
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: Timestamp
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: table
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              query: SELECT count() as Traces FROM $table WHERE $timeFilter
+              rawQuery: |-
+                /* grafana dashboard=Basics, user=1 */
+                SELECT count() as Trace FROM default.otel_traces WHERE Timestamp >= toDateTime64(1734615033, 3) AND Timestamp <= toDateTime64(1734615333, 3)
+              refId: C
+              round: 0s
+              skip_comments: true
+              table: otel_traces
+          title: Inserts in timeperiod
+          transformations:
+            - id: concatenate
+              options:
+                frameNameLabel: frame
+                frameNameMode: drop
+            - id: transpose
+              options:
+                firstFieldName: Table
+                restFieldsName: ""
+          type: table
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic
+                custom:
+                    axisBorderShow: false
+                    axisCenteredZero: false
+                    axisColorMode: text
+                    axisLabel: ""
+                    axisPlacement: auto
+                    barAlignment: 0
+                    barWidthFactor: 0.6
+                    drawStyle: points
+                    fillOpacity: 0
+                    gradientMode: none
+                    hideFrom:
+                        legend: false
+                        tooltip: false
+                        viz: false
+                    insertNulls: 3.6e+06
+                    lineInterpolation: smooth
+                    lineStyle:
+                        dash:
+                            - 10
+                            - 10
+                        fill: dash
+                    lineWidth: 1
+                    pointSize: 4
+                    scaleDistribution:
+                        type: linear
+                    showPoints: always
+                    spanNulls: false
+                    stacking:
+                        group: A
+                        mode: none
+                    thresholdsStyle:
+                        mode: "off"
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                          value: null
+                        - color: red
+                          value: 80
+            overrides: []
+          gridPos:
+            h: 10
+            w: 11
+            x: 0
+            "y": 8
+          id: 2
+          options:
+            legend:
+                calcs:
+                    - lastNotNull
+                    - max
+                    - mean
+                displayMode: table
+                placement: bottom
+                showLegend: true
+            tooltip:
+                mode: single
+                sort: none
+          pluginVersion: 11.3.0
+          targets:
+            - adHocFilters: []
+              add_metadata: true
+              database: default
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: Timestamp
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              query: |
+                SELECT
+                    $timeSeries AS t,
+                    count() AS "c_$table"
+                FROM $table
+                GROUP BY t
+                ORDER BY t ASC
+              rawQuery: |-
+                /* grafana dashboard=Basics, user=1 */
+                SELECT
+                    (intDiv(toFloat64(Timestamp) * 1000, (0 * 1000)) * (0 * 1000)) AS t,
+                    count() AS "c_default.otel_logs"
+                FROM default.otel_logs
+                GROUP BY t
+                ORDER BY t ASC
+              refId: A
+              round: 0s
+              showFormattedSQL: true
+              skip_comments: true
+              table: otel_logs
+            - adHocFilters: []
+              add_metadata: true
+              database: default
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              query: |
+                SELECT
+                    $timeSeries AS t,
+                    count() AS "c_$table"
+                FROM $table
+                WHERE $timeFilter
+                GROUP BY t
+                ORDER BY t ASC
+              rawQuery: |-
+                /* grafana dashboard=Basics, user=1 */
+                SELECT
+                    (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t,
+                    count() AS "c_default.otel_metrics_gauge"
+                FROM default.otel_metrics_gauge
+                WHERE $tim
+                GROUP BY t
+                ORDER BY t ASC
+              refId: B
+              round: 0s
+              skip_comments: true
+              table: otel_metrics_gauge
+            - adHocFilters: []
+              add_metadata: true
+              database: default
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: Timestamp
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              query: |
+                SELECT
+                    $timeSeries AS t,
+                    count() AS "c_$table"
+                FROM $table
+                WHERE $timeFilter
+                GROUP BY t
+                ORDER BY t ASC
+              rawQuery: |-
+                /* grafana dashboard=Basics, user=1 */
+                SELECT
+                    (intDiv(toFloat64(undefined) * 1000, (2 * 1000)) * (2 * 1000)) AS t,
+                    count() AS "c_default.otel_traces"
+                FROM default.otel_traces
+                WHERE undefined >= toDateTime64(1734602222, 3) AND undefined <= toDateTime64(1734604022, 3)
+                GROUP BY t
+                ORDER BY t ASC
+              refId: C
+              round: 0s
+              skip_comments: true
+              table: otel_traces
+          title: Rate of inserts
+          type: timeseries
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults: {}
+            overrides: []
+          gridPos:
+            h: 10
+            w: 13
+            x: 11
+            "y": 8
+          id: 1
+          options:
+            dedupStrategy: signature
+            enableLogDetails: true
+            prettifyLogMessage: true
+            showCommonLabels: false
+            showLabels: false
+            showTime: true
+            sortOrder: Descending
+            wrapLogMessage: false
+          pluginVersion: 11.3.0
+          targets:
+            - adHocFilters: []
+              add_metadata: true
+              database: default
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: Timestamp
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: logs
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              query: select Timestamp, Body, ResourceAttributes, TraceId from otel_logs where $timeFilter order by Timestamp DESC limit 1000
+              rawQuery: |-
+                /* grafana dashboard=Basics, user=1 */
+                select Timestamp, Body, ResourceAttributes, TraceId from otel_logs where Timestamp >= toDateTime64(1734591476, 3) AND Timestamp <= toDateTime64(1734613076, 3) order by Timestamp desc limit 1000
+              refId: A
+              round: 0s
+              showFormattedSQL: true
+              skip_comments: true
+              table: otel_logs
+          title: Logs
+          type: logs
+    preload: false
+    refresh: 10s
+    schemaVersion: 40
+    tags: []
+    templating:
+        list: []
+    time:
+        from: now-30m
+        to: now
+    timepicker: {}
+    timezone: browser
+    title: Clickhouse Basic Table Stats
+    uid: ae6dsbwi4f7k0b
+    weekStart: ""

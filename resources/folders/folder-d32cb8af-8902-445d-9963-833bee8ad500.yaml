@@ -1,0 +1,8 @@
+apiVersion: grizzly.grafana.com/v1alpha1
+kind: DashboardFolder
+metadata:
+    name: d32cb8af-8902-445d-9963-833bee8ad500
+spec:
+    orgId: 1
+    title: Library
+    uid: d32cb8af-8902-445d-9963-833bee8ad500

@@ -1,0 +1,10 @@
+apiVersion: grizzly.grafana.com/v1alpha1
+kind: AlertContactPoint
+metadata:
+    name: fesmjbvlq15hee
+spec:
+    name: base14-oncall
+    settings:
+        url: '[REDACTED]'
+    type: googlechat
+    uid: fesmjbvlq15hee

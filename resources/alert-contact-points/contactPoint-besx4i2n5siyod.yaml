@@ -1,0 +1,12 @@
+apiVersion: grizzly.grafana.com/v1alpha1
+kind: AlertContactPoint
+metadata:
+    name: besx4i2n5siyod
+spec:
+    name: base14-oncall
+    settings:
+        addresses: |
+            founders@base14.io, nimisha@base14.io, shivani@base14.io
+        singleEmail: false
+    type: email
+    uid: besx4i2n5siyod

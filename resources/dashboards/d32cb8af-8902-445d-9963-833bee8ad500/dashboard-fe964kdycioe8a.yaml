@@ -1,0 +1,379 @@
+apiVersion: grizzly.grafana.com/v1alpha1
+kind: Dashboard
+metadata:
+    folder: d32cb8af-8902-445d-9963-833bee8ad500
+    name: fe964kdycioe8a
+spec:
+    __elements: {}
+    __inputs:
+        - description: ""
+          label: Scout DS
+          name: DS_ScoutAltCH
+          pluginId: vertamedia-clickhouse-datasource
+          pluginName: Altinity plugin for ClickHouse
+          type: datasource
+        - description: ""
+          label: Expression
+          name: DS_EXPRESSION
+          pluginId: __expr__
+          type: datasource
+    __requires:
+        - id: __expr__
+          type: datasource
+          version: 1.0.0
+        - id: grafana
+          name: Grafana
+          type: grafana
+          version: 11.3.0
+        - id: logs
+          name: Logs
+          type: panel
+          version: ""
+        - id: stat
+          name: Stat
+          type: panel
+          version: ""
+        - id: table
+          name: Table
+          type: panel
+          version: ""
+        - id: vertamedia-clickhouse-datasource
+          name: Altinity plugin for ClickHouse
+          type: datasource
+          version: 3.2.4
+    annotations:
+        list:
+            - builtIn: 1
+              datasource:
+                type: grafana
+                uid: -- Grafana --
+              enable: true
+              hide: true
+              iconColor: rgba(0, 211, 255, 1)
+              name: Annotations & Alerts
+              type: dashboard
+    editable: true
+    fiscalYearStartMonth: 0
+    graphTooltip: 0
+    links: []
+    panels:
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                          value: null
+                        - color: red
+                          value: 10000
+            overrides: []
+          gridPos:
+            h: 8
+            w: 12
+            x: 0
+            "y": 0
+          id: 4
+          options:
+            colorMode: value
+            graphMode: area
+            justifyMode: auto
+            orientation: auto
+            percentChangeColorMode: standard
+            reduceOptions:
+                calcs:
+                    - lastNotNull
+                fields: ""
+                values: false
+            showPercentChange: false
+            textMode: auto
+            wideLayout: true
+          pluginVersion: 11.3.0
+          targets:
+            - adHocFilters: []
+              add_metadata: true
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: true
+              interval: ""
+              intervalFactor: 1
+              query: SELECT $timeSeries t, count(distinct MetricName) as TotalGauges FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              rawQuery: |-
+                /* grafana dashboard=LogStats, user=1 */
+                SELECT (intDiv(toFloat64(TimeUnix) * 1000, (300 * 1000)) * (300 * 1000)) t, count(distinct MetricName) as TotalGauge FROM base14.otel_metrics_gauge WHERE TimeUnix >= toDateTime64(1736134464, 3) AND TimeUnix <= toDateTime64(1736307264, 3) GROUP BY t ORDER BY t
+              refId: A
+              round: 0s
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_gauge
+            - adHocFilters: []
+              add_metadata: true
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: true
+              interval: ""
+              intervalFactor: 1
+              query: SELECT $timeSeries t, count(distinct MetricName) as TotalGauges FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              rawQuery: |-
+                /* grafana dashboard=LogStats, user=1 */
+                SELECT (intDiv(toFloat64(TimeUnix) * 1000, (300 * 1000)) * (300 * 1000)) t, count(distinct MetricName) as TotalGauges FROM base14.otel_metrics_gauge WHERE TimeUnix >= toDateTime64(1736134464, 3) AND TimeUnix <= toDateTime64(1736307264, 3) GROUP BY t ORDER BY t
+              refId: B
+              round: 0s
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+            - adHocFilters: []
+              add_metadata: true
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: true
+              interval: ""
+              intervalFactor: 1
+              query: SELECT $timeSeries t, count(distinct MetricName) as TotalGauges FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              rawQuery: |-
+                /* grafana dashboard=LogStats, user=1 */
+                SELECT (intDiv(toFloat64(TimeUnix) * 1000, (300 * 1000)) * (300 * 1000)) t, count(distinct MetricName) as TotalGauges FROM base14.otel_metrics_sum WHERE TimeUnix >= toDateTime64(1736134464, 3) AND TimeUnix <= toDateTime64(1736307264, 3) GROUP BY t ORDER BY t
+              refId: C
+              round: 0s
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_summary
+            - adHocFilters: []
+              add_metadata: true
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: true
+              interval: ""
+              intervalFactor: 1
+              query: SELECT $timeSeries t, count(distinct MetricName) as TotalGauges FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              rawQuery: |-
+                /* grafana dashboard=LogStats, user=1 */
+                SELECT (intDiv(toFloat64(TimeUnix) * 1000, (300 * 1000)) * (300 * 1000)) t, count(distinct MetricName) as TotalGauges FROM base14.otel_metrics_summary WHERE TimeUnix >= toDateTime64(1736134464, 3) AND TimeUnix <= toDateTime64(1736307264, 3) GROUP BY t ORDER BY t
+              refId: D
+              round: 0s
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_histogram
+            - datasource:
+                type: __expr__
+                uid: ${DS_EXPRESSION}
+              expression: $A+$B+$C+$D
+              hide: false
+              refId: E
+              type: math
+          title: Unique Metrics
+          type: stat
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: thresholds
+                custom:
+                    align: auto
+                    cellOptions:
+                        type: auto
+                    inspect: false
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                          value: null
+                        - color: red
+                          value: 80
+            overrides: []
+          gridPos:
+            h: 8
+            w: 12
+            x: 12
+            "y": 0
+          id: 2
+          options:
+            cellHeight: sm
+            footer:
+                countRows: false
+                fields: ""
+                reducer:
+                    - sum
+                show: false
+            showHeader: true
+          pluginVersion: 11.3.0
+          targets:
+            - adHocFilters: []
+              add_metadata: true
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: Timestamp
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: table
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 10
+              query: "SELECT  if(ResourceAttributes['k8s.pod.name'] != '',ResourceAttributes['k8s.pod.name'], ResourceAttributes['host.name'])  as Pod,  count() LogCount FROM $table WHERE $timeFilter \nGROUP BY Pod\nOrder by LogCount desc\n"
+              rawQuery: "/* grafana dashboard=LogStats, user=1 */\nSELECT  if(ResourceAttributes['k8s.pod.name'] != '',ResourceAttributes['k8s.pod.name'], ResourceAttributes['host.name']  as Pod,  count() LogCount FROM base14.otel_logs WHERE Timestamp >= toDateTime64(1736202454, 3) AND Timestamp <= toDateTime64(1736224054, 3) \nGROUP BY Pod\nOrder by LogCount desc"
+              refId: A
+              round: 0s
+              showFormattedSQL: true
+              skip_comments: true
+              table: otel_logs
+          title: Logs By Pods
+          type: table
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: thresholds
+                custom:
+                    align: auto
+                    cellOptions:
+                        type: auto
+                    inspect: false
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                          value: null
+                        - color: red
+                          value: 80
+            overrides: []
+          gridPos:
+            h: 8
+            w: 12
+            x: 0
+            "y": 8
+          id: 1
+          options:
+            cellHeight: sm
+            footer:
+                countRows: false
+                fields: ""
+                reducer:
+                    - sum
+                show: false
+            showHeader: true
+          pluginVersion: 11.3.0
+          targets:
+            - adHocFilters: []
+              add_metadata: true
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: Timestamp
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: table
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 10
+              query: "SELECT  if(ServiceName != '', ServiceName, ResourceAttributes['k8s.container.name']) as Service ,  count() LogCount FROM $table WHERE $timeFilter \nGROUP BY if(ServiceName != '', ServiceName, ResourceAttributes['k8s.container.name']) as Service\nOrder by LogCount desc\n"
+              rawQuery: "/* grafana dashboard=New dashboard, user=1 */\nSELECT  if(ServiceName != '', ServiceName, ResourceAttributes['k8s.container.name']) as Service ,  count() LogCount FROM base14.otel_logs WHERE Timestamp >= toDateTime64(1736141114, 3) AND Timestamp <= toDateTime64(1736162714, 3) \nGROUP BY if(ServiceName != '', ServiceName, ResourceAttributes['k8s.container.name']) as Service\nOrder by LogCount des"
+              refId: A
+              round: 0s
+              showFormattedSQL: true
+              skip_comments: true
+              table: otel_logs
+          title: Logs By Service
+          type: table
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          gridPos:
+            h: 10
+            w: 24
+            x: 0
+            "y": 16
+          id: 3
+          options:
+            dedupStrategy: none
+            enableLogDetails: true
+            prettifyLogMessage: false
+            showCommonLabels: false
+            showLabels: false
+            showTime: false
+            sortOrder: Descending
+            wrapLogMessage: false
+          pluginVersion: 11.3.0
+          targets:
+            - adHocFilters: []
+              add_metadata: true
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: Timestamp
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: logs
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 10
+              query: "SELECT  TimestampTime, Body from $table where $timeFilter\nAND multiSearchAny(Body, ['error', 'exception']) \nORDER BY TimestampTime\n\n"
+              rawQuery: "/* grafana dashboard=LogStats, user=1 */\nSELECT  TimestampTime, Body from base14.otel_logs where Timestamp >= toDateTime64(1736202454, 3) AND Timestamp <= toDateTime64(1736224054, 3)\nAND \nORDER BY TimestampTime"
+              refId: A
+              round: 0s
+              showFormattedSQL: true
+              skip_comments: true
+              table: otel_logs
+          title: Errors and Exceptions
+          type: logs
+    schemaVersion: 40
+    tags: []
+    templating:
+        list: []
+    time:
+        from: now-5m
+        to: now
+    timepicker: {}
+    timezone: browser
+    title: LogStats
+    uid: fe964kdycioe8a
+    weekStart: ""

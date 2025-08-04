@@ -1,0 +1,868 @@
+apiVersion: grizzly.grafana.com/v1alpha1
+kind: Dashboard
+metadata:
+    folder: d32cb8af-8902-445d-9963-833bee8ad500
+    name: aeqjntp29beo0e
+spec:
+    annotations:
+        list:
+            - builtIn: 1
+              datasource:
+                type: grafana
+                uid: -- Grafana --
+              enable: true
+              hide: true
+              iconColor: rgba(0, 211, 255, 1)
+              name: Annotations & Alerts
+              type: dashboard
+    editable: true
+    fiscalYearStartMonth: 0
+    graphTooltip: 0
+    links: []
+    panels:
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic
+                    seriesBy: max
+                custom:
+                    axisBorderShow: false
+                    axisCenteredZero: false
+                    axisColorMode: text
+                    axisLabel: ""
+                    axisPlacement: auto
+                    barAlignment: 0
+                    barWidthFactor: 0.6
+                    drawStyle: bars
+                    fillOpacity: 0
+                    gradientMode: hue
+                    hideFrom:
+                        legend: false
+                        tooltip: false
+                        viz: false
+                    insertNulls: false
+                    lineInterpolation: smooth
+                    lineWidth: 1
+                    pointSize: 5
+                    scaleDistribution:
+                        type: linear
+                    showPoints: auto
+                    spanNulls: false
+                    stacking:
+                        group: A
+                        mode: none
+                    thresholdsStyle:
+                        mode: "off"
+                fieldMinMax: false
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                unit: bytes
+            overrides: []
+          gridPos:
+            h: 8
+            w: 12
+            x: 0
+            "y": 0
+          id: 1
+          options:
+            legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: true
+            tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          pluginVersion: 12.0.0
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "SELECT $timeSeries as t, avg(Value)\nFROM $table \nWHERE $timeFilter \nAND MetricName = 'otelcol_process_memory_rss'\nAND ServiceName in '$tenant'\nAND ResourceAttributes['environment'] = '${env:raw}'\nGROUP BY t\nORDER BY t"
+              rawQuery: "/* grafana dashboard='OTel Collector Data Flow', user='2' */\nSELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) as t, avg(Value)\nFROM base14.otel_metrics_gauge \nWHERE TimeUnix >= toDateTime64(1752487157,3) AND TimeUnix <= toDateTime64(1752490757,3) \nAND MetricName = 'otelcol_process_memory_rss'\nAND ServiceName in 'dmart-otel'\nAND ResourceAttributes['environment'] = 'playground'\nGROUP BY t\nORDER BY t"
+              refId: A
+              round: 0s
+              showFormattedSQL: true
+              skip_comments: true
+              table: otel_metrics_gauge
+              useWindowFuncForMacros: true
+          title: Memory RSS
+          type: timeseries
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: palette-classic
+                custom:
+                    axisBorderShow: false
+                    axisCenteredZero: false
+                    axisColorMode: text
+                    axisLabel: ""
+                    axisPlacement: auto
+                    barAlignment: 0
+                    barWidthFactor: 0.6
+                    drawStyle: line
+                    fillOpacity: 0
+                    gradientMode: none
+                    hideFrom:
+                        legend: false
+                        tooltip: false
+                        viz: false
+                    insertNulls: false
+                    lineInterpolation: linear
+                    lineWidth: 1
+                    pointSize: 5
+                    scaleDistribution:
+                        type: linear
+                    showPoints: auto
+                    spanNulls: false
+                    stacking:
+                        group: A
+                        mode: none
+                    thresholdsStyle:
+                        mode: "off"
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+            overrides: []
+          gridPos:
+            h: 8
+            w: 12
+            x: 12
+            "y": 0
+          id: 2
+          options:
+            legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: true
+            tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          pluginVersion: 12.0.0
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: |
+                $perSecond(Value)
+                FROM $table
+                WHERE $table.MetricName = 'otelcol_exporter_sent_spans'
+                AND ServiceName in '$tenant'
+                AND ResourceAttributes['environment'] = '${env:raw}'
+              rawQuery: |-
+                /* grafana dashboard='OTel Collector Data Flow', user='2' */
+                SELECT t, if(max_0 - lagInFrame(max_0,1,0) OVER () < 0, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / ((t - lagInFrame(t,1,0) OVER ())/1000) ) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, max(Value) AS max_0 FROM base14.otel_metrics_sum
+                WHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3) AND base14.otel_metrics_sum.MetricName = 'otelcol_exporter_sent_spans'
+                AND ServiceName in 'dmart-otel'
+                AND ResourceAttributes['environment'] = 'playground' GROUP BY t ORDER BY t)
+              refId: A
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: |
+                $perSecond(Value)
+                FROM $table
+                WHERE $table.MetricName = 'otelcol_receiver_accepted_spans'
+                AND ServiceName in '$tenant'
+                AND ResourceAttributes['environment'] = '${env:raw}'
+              rawQuery: |-
+                /* grafana dashboard='OTel Collector Data Flow', user='2' */
+                SELECT t, if(max_0 - lagInFrame(max_0,1,0) OVER () < 0, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / ((t - lagInFrame(t,1,0) OVER ())/1000) ) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, max(Value) AS max_0 FROM base14.otel_metrics_sum
+                WHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3) AND base14.otel_metrics_sum.MetricName = 'otelcol_receiver_accepted_spans'
+                AND ServiceName in 'dmart-otel'
+                AND ResourceAttributes['environment'] = 'playground' GROUP BY t ORDER BY t)
+              refId: C
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+          title: Accepted and Sent Spans per second
+          type: timeseries
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: thresholds
+                fieldMinMax: false
+                mappings: []
+                min: 10
+                thresholds:
+                    mode: percentage
+                    steps:
+                        - color: green
+                unit: cps
+            overrides: []
+          gridPos:
+            h: 8
+            w: 12
+            x: 0
+            "y": 8
+          id: 6
+          options:
+            colorMode: value
+            graphMode: area
+            justifyMode: center
+            orientation: auto
+            percentChangeColorMode: same_as_value
+            reduceOptions:
+                calcs:
+                    - lastNotNull
+                fields: ""
+                values: false
+            showPercentChange: false
+            textMode: value
+            wideLayout: true
+          pluginVersion: 12.0.0
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: |-
+                $perSecond(Value)
+                FROM $table
+                WHERE $table.MetricName = 'otelcol_receiver_accepted_spans'
+                AND ServiceName in '$tenant'
+                AND ResourceAttributes['environment'] = '${env:raw}'
+              rawQuery: |-
+                /* grafana dashboard='OTel Collector Data Flow', user='2' */
+                SELECT t, if(max_0 - lagInFrame(max_0,1,0) OVER () < 0, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / ((t - lagInFrame(t,1,0) OVER ())/1000) ) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, max(Value) AS max_0 FROM base14.otel_metrics_sum
+                WHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3) AND base14.otel_metrics_sum.MetricName = 'otelcol_receiver_accepted_spans'
+                AND ServiceName in 'dmart-otel'
+                AND ResourceAttributes['environment'] = 'playground' GROUP BY t ORDER BY t)
+              refId: A
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: |
+                $perSecond(Value)
+                FROM $table
+                WHERE $table.MetricName = 'otelcol_receiver_accepted_metric_points'
+                AND ServiceName in '$tenant'
+                AND ResourceAttributes['environment'] = '${env:raw}'
+              rawQuery: |-
+                /* grafana dashboard='OTel Collector Data Flow', user='2' */
+                SELECT t, if(max_0 - lagInFrame(max_0,1,0) OVER () < 0, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / ((t - lagInFrame(t,1,0) OVER ())/1000) ) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, max(Value) AS max_0 FROM base14.otel_metrics_sum
+                WHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3) AND base14.otel_metrics_sum.MetricName = 'otelcol_receiver_accepted_metric_points'
+                AND ServiceName in 'dmart-otel'
+                AND ResourceAttributes['environment'] = 'playground' GROUP BY t ORDER BY t)
+              refId: B
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: |
+                $perSecond(Value)
+                FROM $table
+                WHERE $table.MetricName = 'otelcol_receiver_accepted_log_records'
+                AND ServiceName in '$tenant'
+                AND ResourceAttributes['environment'] = '${env:raw}'
+              rawQuery: |-
+                /* grafana dashboard='OTel Collector Data Flow', user='2' */
+                SELECT t, if(max_0 - lagInFrame(max_0,1,0) OVER () < 0, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / ((t - lagInFrame(t,1,0) OVER ())/1000) ) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, max(Value) AS max_0 FROM base14.otel_metrics_sum
+                WHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3) AND base14.otel_metrics_sum.MetricName = 'otelcol_receiver_accepted_log_records'
+                AND ServiceName in 'dmart-otel'
+                AND ResourceAttributes['environment'] = 'playground' GROUP BY t ORDER BY t)
+              refId: C
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+          title: 'Accepted : Spans Metrics and Logs'
+          type: stat
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: thresholds
+                fieldMinMax: false
+                mappings: []
+                min: 10
+                thresholds:
+                    mode: percentage
+                    steps:
+                        - color: green
+                unit: cps
+            overrides: []
+          gridPos:
+            h: 8
+            w: 12
+            x: 12
+            "y": 8
+          id: 4
+          options:
+            colorMode: value
+            graphMode: area
+            justifyMode: center
+            orientation: auto
+            percentChangeColorMode: same_as_value
+            reduceOptions:
+                calcs:
+                    - lastNotNull
+                fields: ""
+                values: false
+            showPercentChange: false
+            textMode: value
+            wideLayout: true
+          pluginVersion: 12.0.0
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: |
+                $perSecond(Value)
+                FROM $table
+                WHERE $table.MetricName = 'otelcol_exporter_sent_spans'
+                AND ServiceName in '$tenant'
+                AND ResourceAttributes['environment'] = '${env:raw}'
+              rawQuery: |-
+                /* grafana dashboard='OTel Collector Data Flow', user='2' */
+                SELECT t, if(max_0 - lagInFrame(max_0,1,0) OVER () < 0, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / ((t - lagInFrame(t,1,0) OVER ())/1000) ) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, max(Value) AS max_0 FROM base14.otel_metrics_sum
+                WHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3) AND base14.otel_metrics_sum.MetricName = 'otelcol_exporter_sent_spans'
+                AND ServiceName in 'dmart-otel'
+                AND ResourceAttributes['environment'] = 'playground' GROUP BY t ORDER BY t)
+              refId: A
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: |
+                $perSecond(Value)
+                FROM $table
+                WHERE $table.MetricName = 'otelcol_exporter_sent_metric_points'
+                AND ServiceName in '$tenant'
+                AND ResourceAttributes['environment'] = '${env:raw}'
+              rawQuery: |-
+                /* grafana dashboard='OTel Collector Data Flow', user='2' */
+                SELECT t, if(max_0 - lagInFrame(max_0,1,0) OVER () < 0, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / ((t - lagInFrame(t,1,0) OVER ())/1000) ) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, max(Value) AS max_0 FROM base14.otel_metrics_sum
+                WHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3) AND base14.otel_metrics_sum.MetricName = 'otelcol_exporter_sent_metric_points'
+                AND ServiceName in 'dmart-otel'
+                AND ResourceAttributes['environment'] = 'playground' GROUP BY t ORDER BY t)
+              refId: B
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "$perSecond(Value)\nFROM $table \nWHERE $table.MetricName = 'otelcol_exporter_sent_log_records'\nAND ServiceName in '$tenant'\nAND ResourceAttributes['environment'] = '${env:raw}'\n"
+              rawQuery: "/* grafana dashboard='OTel Collector Data Flow', user='2' */\nSELECT t, if(max_0 - lagInFrame(max_0,1,0) OVER () < 0, nan, (max_0 - lagInFrame(max_0,1,0) OVER ()) / ((t - lagInFrame(t,1,0) OVER ())/1000) ) AS max_0_PerSecond FROM ( SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) AS t, max(Value) AS max_0 FROM base14.otel_metrics_sum \nWHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3) AND base14.otel_metrics_sum.MetricName = 'otelcol_exporter_sent_log_records'\nAND ServiceName in 'dmart-otel'\nAND ResourceAttributes['environment'] = 'playground' GROUP BY t ORDER BY t)"
+              refId: C
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+          title: 'Sent : Spans Metrics and Logs'
+          type: stat
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: thresholds
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                        - color: red
+                          value: 80
+            overrides: []
+          gridPos:
+            h: 8
+            w: 12
+            x: 0
+            "y": 16
+          id: 5
+          options:
+            colorMode: value
+            graphMode: area
+            justifyMode: auto
+            orientation: auto
+            percentChangeColorMode: standard
+            reduceOptions:
+                calcs:
+                    - lastNotNull
+                fields: ""
+                values: false
+            showPercentChange: false
+            textMode: auto
+            wideLayout: true
+          pluginVersion: 12.0.0
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "SELECT $timeSeries t, count() AS RefusedSpans\nFROM $table\nWHERE $timeFilter\nAND $table.MetricName = 'otelcol_receiver_refused_spans'\nAND ServiceName in '$tenant'\nAND ResourceAttributes['environment'] = '${env:raw}'\n\nGROUP BY t \nORDER BY t"
+              rawQuery: "/* grafana dashboard='OTel Collector Data Flow', user='2' */\nSELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) t, count() AS RefusedSpans\nFROM base14.otel_metrics_sum\nWHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3)\nAND base14.otel_metrics_sum.MetricName = 'otelcol_receiver_refused_spans'\nAND ServiceName in 'dmart-otel'\nAND ResourceAttributes['environment'] = 'playground'\n\nGROUP BY t \nORDER BY t"
+              refId: A
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: |-
+                SELECT $timeSeries t, count() AS RefusedMetrics
+                FROM $table
+                WHERE $timeFilter
+                AND $table.MetricName = 'otelcol_receiver_refused_metric_points'
+                AND ServiceName in '$tenant'
+                AND ResourceAttributes['environment'] = '${env:raw}'
+
+                GROUP BY t
+                ORDER BY t
+              rawQuery: |-
+                /* grafana dashboard='OTel Collector Data Flow', user='2' */
+                SELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) t, count() AS RefusedMetrics
+                FROM base14.otel_metrics_sum
+                WHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3)
+                AND base14.otel_metrics_sum.MetricName = 'otelcol_receiver_refused_metric_points'
+                AND ServiceName in 'dmart-otel'
+                AND ResourceAttributes['environment'] = 'playground'
+
+                GROUP BY t
+                ORDER BY t
+              refId: B
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "SELECT $timeSeries t, count() AS RefusedLogs \nFROM $table\nWHERE $timeFilter\nAND $table.MetricName = 'otelcol_receiver_refused_log_records'\nAND ServiceName in '$tenant'\nAND ResourceAttributes['environment'] = '${env:raw}'\n\nGROUP BY t \nORDER BY t"
+              rawQuery: "/* grafana dashboard='OTel Collector Data Flow', user='2' */\nSELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) t, count() AS RefusedLogs \nFROM base14.otel_metrics_sum\nWHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3)\nAND base14.otel_metrics_sum.MetricName = 'otelcol_receiver_refused_log_records'\nAND ServiceName in 'dmart-otel'\nAND ResourceAttributes['environment'] = 'playground'\n\nGROUP BY t \nORDER BY t"
+              refId: C
+              round: "0"
+              showFormattedSQL: true
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+          title: Receiver Refused Spans Metrics and Logs
+          type: stat
+        - datasource:
+            type: vertamedia-clickhouse-datasource
+            uid: ds-scout-altinity-ch
+          fieldConfig:
+            defaults:
+                color:
+                    mode: thresholds
+                mappings: []
+                thresholds:
+                    mode: absolute
+                    steps:
+                        - color: green
+                        - color: red
+                          value: 80
+            overrides: []
+          gridPos:
+            h: 8
+            w: 12
+            x: 12
+            "y": 16
+          id: 3
+          options:
+            colorMode: value
+            graphMode: area
+            justifyMode: auto
+            orientation: auto
+            percentChangeColorMode: standard
+            reduceOptions:
+                calcs:
+                    - lastNotNull
+                fields: ""
+                values: false
+            showPercentChange: false
+            textMode: auto
+            wideLayout: true
+          pluginVersion: 12.0.0
+          targets:
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "SELECT $timeSeries t, count() as FailedSpans \nFROM $table \nWHERE $timeFilter\nAND $table.MetricName = 'otelcol_exporter_send_failed_spans' \nAND ServiceName in '$tenant'\nAND ResourceAttributes['environment'] = '${env:raw}'\n\nGROUP BY t \nORDER BY t"
+              rawQuery: "/* grafana dashboard='OTel Collector Data Flow', user='2' */\nSELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) t, count() as FailedSpans \nFROM base14.otel_metrics_sum \nWHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3)\nAND base14.otel_metrics_sum.MetricName = 'otelcol_exporter_send_failed_spans' \nAND ServiceName in 'dmart-otel'\nAND ResourceAttributes['environment'] = 'playground'\n\nGROUP BY t \nORDER BY t"
+              refId: A
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "SELECT $timeSeries t, count() as FailedMetrics \nFROM $table \nWHERE $timeFilter\nAND $table.MetricName = 'otelcol_exporter_send_failed_metric_points' \nAND ServiceName in '$tenant'\nAND ResourceAttributes['environment'] = '${env:raw}'\n\nGROUP BY t \nORDER BY t"
+              rawQuery: "/* grafana dashboard='OTel Collector Data Flow', user='2' */\nSELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) t, count() as FailedMetrics \nFROM base14.otel_metrics_sum \nWHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3)\nAND base14.otel_metrics_sum.MetricName = 'otelcol_exporter_send_failed_metric_points' \nAND ServiceName in 'dmart-otel'\nAND ResourceAttributes['environment'] = 'playground'\n\nGROUP BY t \nORDER BY t"
+              refId: B
+              round: "0"
+              showFormattedSQL: false
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+            - adHocFilters: []
+              adHocValuesQuery: ""
+              add_metadata: true
+              contextWindowSize: "10"
+              database: base14
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              dateTimeColDataType: TimeUnix
+              dateTimeType: DATETIME64
+              editorMode: sql
+              extrapolate: true
+              format: time_series
+              formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+              hide: false
+              interval: ""
+              intervalFactor: 1
+              nullifySparse: false
+              query: "SELECT $timeSeries t, count() AS FailedLogs \nFROM $table \nWHERE $timeFilter\nAND $table.MetricName = 'otelcol_exporter_send_failed_log_records'\nAND ServiceName in '$tenant'\nAND ResourceAttributes['environment'] = '${env:raw}'\n\nGROUP BY t \nORDER BY t"
+              rawQuery: "/* grafana dashboard='OTel Collector Data Flow', user='2' */\nSELECT (intDiv(toFloat64(TimeUnix) * 1000, (2 * 1000)) * (2 * 1000)) t, count() AS FailedLogs \nFROM base14.otel_metrics_sum \nWHERE TimeUnix >= toDateTime64(1752487648,3) AND TimeUnix <= toDateTime64(1752491248,3)\nAND base14.otel_metrics_sum.MetricName = 'otelcol_exporter_send_failed_log_records'\nAND ServiceName in 'dmart-otel'\nAND ResourceAttributes['environment'] = 'playground'\n\nGROUP BY t \nORDER BY t"
+              refId: C
+              round: "0"
+              showFormattedSQL: true
+              skip_comments: true
+              table: otel_metrics_sum
+              useWindowFuncForMacros: true
+          title: Sender Failed Spans Metrics and Logs
+          type: stat
+    preload: false
+    schemaVersion: 41
+    tags: []
+    templating:
+        list:
+            - allowCustomValue: false
+              current:
+                text: glomopay-otel
+                value: glomopay-otel
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              definition: "SELECT distinct ServiceName FROM $table \nWHERE TimeUnix > now() - interval 12 hour\nand ServiceName like '%-otel'\norder by ServiceName \n"
+              includeAll: false
+              label: Tenant
+              name: tenant
+              options: []
+              query:
+                adHocFilters: []
+                adHocValuesQuery: ""
+                add_metadata: true
+                contextWindowSize: "10"
+                database: base14
+                datasourceMode: Variable
+                dateTimeColDataType: TimeUnix
+                dateTimeType: DATETIME64
+                editorMode: sql
+                extrapolate: true
+                format: time_series
+                formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+                interval: ""
+                intervalFactor: 1
+                nullifySparse: false
+                query: "SELECT distinct ServiceName FROM $table \nWHERE TimeUnix > now() - interval 12 hour\nand ServiceName like '%-otel'\norder by ServiceName \n"
+                rawQuery: "/* grafana dashboard='OTel Collector Data Flow', user='2' */\nSELECT distinct ServiceName FROM base14.otel_metrics_sum \nWHERE TimeUnix > now() - interval 12 hour\nand ServiceName like '%-otel'\norder by ServiceName"
+                round: 0s
+                skip_comments: true
+                table: otel_metrics_sum
+                useWindowFuncForMacros: true
+              refresh: 1
+              regex: ""
+              type: query
+            - current:
+                text: as1-production
+                value: as1-production
+              datasource:
+                type: vertamedia-clickhouse-datasource
+                uid: ds-scout-altinity-ch
+              definition: "select distinct ResourceAttributes['environment'] from $table\nwhere $timeFilter \nand ServiceName = '$tenant'"
+              description: ""
+              label: Environment
+              name: env
+              options: []
+              query:
+                adHocFilters: []
+                adHocValuesQuery: ""
+                add_metadata: true
+                contextWindowSize: "10"
+                database: base14
+                datasourceMode: Variable
+                dateTimeColDataType: TimeUnix
+                dateTimeType: DATETIME64
+                editorMode: sql
+                extrapolate: true
+                format: time_series
+                formattedQuery: SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t
+                interval: ""
+                intervalFactor: 1
+                nullifySparse: false
+                query: "select distinct ResourceAttributes['environment'] from $table\nwhere $timeFilter \nand ServiceName = '$tenant'"
+                rawQuery: "/* grafana dashboard='OTel Collector Data Flow', user='2' */\nselect distinct ResourceAttributes['environment'] from base14.otel_metrics_sum\nwhere TimeUnix >= toDateTime64(1752487157,3) AND TimeUnix <= toDateTime64(1752490757,3) \nand ServiceName = 'dmart-otel'"
+                round: 0s
+                skip_comments: true
+                table: otel_metrics_sum
+                useWindowFuncForMacros: true
+              refresh: 1
+              regex: ""
+              type: query
+    time:
+        from: now-1h
+        to: now
+    timepicker: {}
+    timezone: browser
+    title: OTel Collector Data Flow
+    uid: aeqjntp29beo0e
