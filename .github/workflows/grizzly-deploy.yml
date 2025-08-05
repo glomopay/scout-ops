@@ -11,10 +11,6 @@ on:
         options:
           - diff
           - apply
-      branch:
-        description: 'Branch to deploy from'
-        required: true
-        type: string
   push:
     branches: [ main ]
     paths:
@@ -29,7 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch || github.ref }}
+          ref: ${{github.ref }}
 
       - name: Setup Grizzly
         uses: grafana/setup-grizzly@v0.1.0
@@ -52,7 +48,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch || github.ref }}
+          ref: ${{github.ref }}
 
       - name: Setup Grizzly
         uses: grafana/setup-grizzly@v0.1.0
