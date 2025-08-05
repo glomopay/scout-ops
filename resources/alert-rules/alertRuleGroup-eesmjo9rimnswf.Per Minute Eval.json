@@ -148,7 +148,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "Free Disk below 10 GB on base1-clickhouse",
         "uid": "desmjrbjuyvwgf",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       },
       {
         "annotations": {
@@ -287,7 +287,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "Free Disk below 100 GB on aps1-clickhouse",
         "uid": "aesx2xauv4iyod",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       },
       {
         "annotations": {
@@ -427,7 +427,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "Free Disk below 100 GB on as1-clickhouse",
         "uid": "eesx33m3mkyyod",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       },
       {
         "annotations": {
@@ -566,7 +566,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "Total Restarts on as1-apps",
         "uid": "besx3b10rz56of",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       },
       {
         "annotations": {
@@ -706,7 +706,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "Free Disk below 100 GB on euw1-clickhouse",
         "uid": "detux3aitircwd",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       },
       {
         "annotations": {
@@ -846,7 +846,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "Free Disk below 100 GB on  use1-clickhouse",
         "uid": "fetux5lxogfswd",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       },
       {
         "annotations": {
@@ -991,7 +991,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "USE1 Node CPU Utilization above 80%",
         "uid": "aetw5vvvlyrcwf",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       },
       {
         "annotations": {
@@ -1136,7 +1136,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "APS1 Node CPU Utilization above 80% (copy)",
         "uid": "detw8h7rbopvka",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       },
       {
         "annotations": {
@@ -1281,7 +1281,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "AS1 Node CPU Utilization above 80% (copy 2)",
         "uid": "cetw8pds6f2f4f",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       },
       {
         "annotations": {
@@ -1426,7 +1426,7 @@
         "ruleGroup": "Per Minute Eval",
         "title": "EUW1 Node CPU Utilization above 80% (copy)",
         "uid": "aetw8s9772vpca",
-        "updated": "2025-08-03T16:34:42.000Z"
+        "updated": "2025-08-04T15:21:13.000Z"
       }
     ],
     "title": "Per Minute Eval"
