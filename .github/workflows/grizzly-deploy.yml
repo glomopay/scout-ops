@@ -1,0 +1,67 @@
+name: Grizzly Grafana Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'diff'
+        type: choice
+        options:
+          - diff
+          - apply
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        type: string
+  push:
+    branches: [ main ]
+    paths:
+      - 'resources/**'
+
+jobs:
+  diff:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'diff') ||
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+
+      - name: Setup Grizzly
+        uses: grafana/setup-grizzly@v0.1.0
+        with:
+          version: 'v0.4.0'
+          grafana_url: ${{ vars.GRAFANA_URL }}
+          grafana_user: admin
+          grafana_token: ${{ secrets.GRIZZLY_GRAFANA_TOKEN }}
+
+      - name: Show diff
+        run: |
+          grr diff ./resources/
+
+  apply:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+
+      - name: Setup Grizzly
+        uses: grafana/setup-grizzly@v0.1.0
+        with:
+          version: 'v0.4.0'
+          grafana_url: ${{ vars.GRAFANA_URL }}
+          grafana_user: admin
+          grafana_token: ${{ secrets.GRIZZLY_GRAFANA_TOKEN }}
+
+      - name: Apply changes
+        run: |
+          grr apply --output=json  --continue-on-error ./resources
