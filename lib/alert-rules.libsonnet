@@ -36,7 +36,6 @@ local createAlertRuleGroup(
 
 local makeAlert(
   title,
-  uid,
   data,
   folderUid,
   pendingPeriod=defaultEvalConfig.pendingPeriod,
@@ -62,7 +61,6 @@ local makeAlert(
   local annotations = defaultAnnotations + customAnnotations,
     
     title: title,
-    uid: uid,
     condition: condition,   // Support multiple conditions
     'for': pendingPeriod,
     keepFiringFor: keepFiringFor,

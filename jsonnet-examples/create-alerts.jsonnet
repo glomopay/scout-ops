@@ -3,7 +3,6 @@
   // Create CPU alert
   local cpuAlert = lib.makeAlert(
     title='High CPU Usage',
-    uid='cpu-high-use',
     pendingPeriod='5m0s',
     data=[
     {
