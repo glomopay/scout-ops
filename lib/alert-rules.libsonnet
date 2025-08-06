@@ -1,34 +1,82 @@
-// alert-rules.libsonnet
+// Default values for alert configuration
+local defaultLabels = {
+  severity: 'warning',
+  team: 'sre',
+  env: std.extVar('ENVIRONMENT') || 'stage',  // Dynamic environment 
+};
 
-// Reusable helper function to create alert rule group
-local createAlertRuleGroup(name, folderUid, interval, rules=[]) = {
+
+// Default evaluation configuration
+local defaultEvalConfig = {
+  interval: 300, 
+  pendingPeriod: '5m', 
+  keepFiringFor: '', 
+};
+
+
+local createAlertRuleGroup(
+  title,
+  folderUid,
+  interval=defaultEvalConfig.interval,
+  rules=[],
+) = {
   apiVersion: 'grizzly.grafana.com/v1alpha1',
   kind: 'AlertRuleGroup',
   metadata: {
-    name: folderUid + '.' + name,
+    name: folderUid + '.' + title,
   },
   spec: {
-    interval: std.parseInt(std.strReplace(interval, "m", "")) * 60,
-    title: name,
+    interval: interval,
+    title: title,
     rules: rules,
     folderUid: folderUid,
   },
 };
 
-// Make Alerts
-local makeAlert(title, forDuration='5m0s', data=[], ruleGroup='', folderUid='') = {
-  title: title,
-  condition: 'C',
-  'for': forDuration,
-  noDataState: 'NoData',
-  execErrState: 'Error',
-  orgID: 1,
-  ruleGroup: ruleGroup,
-  data: data,
-  folderUid: folderUid
-};
+
+local makeAlert(
+  title,
+  uid,
+  data,
+  folderUid,
+  pendingPeriod=defaultEvalConfig.pendingPeriod,
+  keepFiringFor=defaultEvalConfig.keepFiringFor,
+  ruleGroup='',
+  labels=defaultLabels,
+  annotations={},
+  noDataState='NoData',
+  execErrState='Error',
+  condition='C',
+  summary='',
+  description='',
+  runbookURL='',
+  customAnnotations={},
+  orgId=1
+) = {
+  local defaultAnnotations = {
+    summary: summary,
+    description: description,
+    runbook_url: runbookURL
+  },
+
+  local annotations = defaultAnnotations + customAnnotations,
+    
+    title: title,
+    uid: uid,
+    condition: condition,   // Support multiple conditions
+    'for': pendingPeriod,
+    keepFiringFor: keepFiringFor,
+    noDataState: noDataState,
+    execErrState: execErrState,
+    orgId: orgId,
+    ruleGroup: ruleGroup,
+    data: data,
+    folderUid: folderUid,
+    labels: labels,
+    annotations: annotations,
+  };
 
 {
   createAlertRuleGroup: createAlertRuleGroup,
-  makeAlert: makeAlert
+  makeAlert: makeAlert,
 }
