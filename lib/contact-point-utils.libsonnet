@@ -14,7 +14,13 @@
   - orgId: Organization ID (default: 1)
   - disableResolveMessage: Whether to disable the resolve message (default: false)
 */
-local createContactPoint(name, type, settings, orgId=1, disableResolveMessage=false) = {
+local createContactPoint(
+  name
+  type='email', 
+  settings 
+  orgId=1
+  disableResolveMessage=defaultContactPointConfig.disableResolveMessage
+) = {
     apiVersion: 'grizzly.grafana.com/v1alpha1',
     kind: 'AlertContactPoint',
     metadata: { name: name },
@@ -30,3 +36,4 @@ local createContactPoint(name, type, settings, orgId=1, disableResolveMessage=fa
 {
     createContactPoint: createContactPoint,
 }
+
