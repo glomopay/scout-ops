@@ -1,0 +1,9 @@
+{
+  "service": "scout-apps-eks",
+  "threshold": 80,
+  "environment": "stage", 
+  "team": "platform-team",
+  "severity": "warning",
+  "folder_uid": "fetdh3jpthwjka",
+  "runbook_url": "https://runbooks.company.com/cpu-high"
+}
