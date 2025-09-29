@@ -1,26 +1,15 @@
 local alertUtils = import '../lib/alert-utils.libsonnet';
 
-// Default values for alert configuration
-local defaultLabels = {
-  severity: 'warning',
-  team: 'sre',
-  env: 'stage',
-};
-
 // Default evaluation configuration
 local defaultEvalConfig = {
-  interval: 300, 
+  interval: 60, 
   pendingPeriod: '5m', 
   keepFiringFor: '', 
 };
 
 // Default data query configuration
 local defaultDataConfig = {
-  database: 'kulu',
-  interval: 60,
-  maxDataPoints: 43200,
-  queryType: '',
-  relativeTimeRange: { from: 600, to: 0 },
+  database: 'oteldemo1',
   datasource: {
     type: "vertamedia-clickhouse-datasource",
     uid: "ds-scout-altinity-ch"
@@ -30,111 +19,114 @@ local defaultDataConfig = {
 // Default evaluator configuration
 local defaultEvaluator = {
   type: 'gt',
-  params: [70]
+  params: []
+};
+
+local defaultReducer = {
+  type: 'last',
+  params: []
+};
+
+local defaultRelativeTimeRange = {
+  from: 300,
+  to: 0
 };
 
 // Template function that creates alert rule groups from config
-local createAlertRuleGroup(env, alertConfigs) = 
+local createAlertRuleGroup(title, folderUid, alertRules, interval=300, teamConfig = null) =
   local rules = [
-    local mergedConfig = defaultDataConfig + defaultEvaluator + defaultEvalConfig + config;
-    
-    alertUtils.makeAlert(
-      title=mergedConfig.title,
-      data=[
+    {
+      ruleGroup: title,
+      title: rule.title,
+      condition: 'C',
+      data: [
         {
           refId: 'A',
-          queryType: mergedConfig.queryType,
-          relativeTimeRange: mergedConfig.relativeTimeRange,
-          datasource: mergedConfig.datasource,
-          rawQuery: true,
-          query: mergedConfig.query,
-          interval: mergedConfig.interval + 's',
-          maxDataPoints: mergedConfig.maxDataPoints
+          queryType: '',
+          relativeTimeRange: defaultRelativeTimeRange,
+          datasourceUid: defaultDataConfig.datasource.uid,
+          model: {
+            database: defaultDataConfig.database  ,
+            datasource: defaultDataConfig.datasource,
+            rawQuery: true,
+            query: rule.query,
+            interval: interval,
+            relativeTimeRange: if std.objectHas(rule, 'relativeTimeRange') && rule.relativeTimeRange != null then rule.relativeTimeRange else defaultRelativeTimeRange,
+            dateTimeColDataType: rule.dateTimeColDataType,
+            dateTimeType: rule.dateTimeType,
+            format: rule.format,
+            table: rule.table,
+          }
         },
         {
           refId: 'B',
-          queryType: '',
-          relativeTimeRange: {
-            from: 0,
-            to: 0
-          },
-          datasource: {
-            name: 'Expression',
-            type: '__expr__',
-            uid: '__expr__'
-          },
-          conditions: [
-            {
-              evaluator: mergedConfig.evaluator,
-              operator: {
-                type: 'and'
-              },
-              query: {
-                params: ['A']
-              },
-              reducer: {
-                params: [],
-                type: 'last'
-              },
-              type: 'query'
-            }
-          ],
-          expression: 'A',
-          intervalMs: 1000,
-          maxDataPoints: mergedConfig.maxDataPoints
-        }
-        {
-           refId: "C",
-           relativeTimeRange: mergedConfig.relativeTimeRange,
-           datasourceUid: "__expr__",
-           model: {
+          datasourceUid: '__expr__',
+          model: {
             conditions: [
-            {
-                evaluator: {
-                    params: mergedConfig.params,
-                    type: mergedConfig.evaluator.type
-                },
-                operator: {
-                    type: "and"
-                },
-                query: {
-                    params: ['C'] 
-                },
-                reducer: {
-                    params: [],
-                    type: "last"
-                },
-                type: "query"
-            }
-        ],
-        datasource: {
-            type: "__expr__",
-            uid: "__expr__"
+              {
+                evaluator: defaultEvaluator,
+                operator: { type: 'and' },
+                query: { params: ['B'] },
+                reducer: defaultReducer,
+                type: 'query'
+              }
+            ],
+            datasource: { type: '__expr__', uid: '__expr__' },
+            expression: 'A',
+            intervalMs: 1000,
+            maxDataPoints: 43200,
+            type: 'reduce',
+            refId: 'B',
+            reducer : if std.objectHas(rule, 'reducerType') && rule.reducerType != null then rule.reducerType else defaultReducer.type
+          }
         },
-        expression: 'B',
-        intervalMs: 1000,
-        maxDataPoints: mergedConfig.maxDataPoints,
-        refId: "C",
-        type: "threshold"
-    }
+      {
+          refId: 'C',
+          datasourceUid: '__expr__',
+          model: {
+            conditions: [
+              {
+                evaluator: rule.evaluator,
+                operator: { type: 'and' },
+                query: { params: ['C'] },
+                reducer: defaultReducer,
+                type: 'query'
+              }
+            ],
+            datasource: { type: '__expr__', uid: '__expr__' },
+            expression: 'B',
+            intervalMs: 1000,
+            maxDataPoints: 43200,
+            type: 'threshold',
+            refId: 'C'
+       
+          }
         }
+
       ],
-      folderUid=config.folderUid,
-      pendingPeriod=mergedConfig.for,
-      labels=defaultLabels + mergedConfig.labels,
-      annotations= defaultAnnotations + mergedConfig.annotations,
-      condition='B'
-    )
-    for config in alertConfigs
+      noDataState:  if std.objectHas(rule, 'noDataState') && rule.noDataState != null then rule.noDataState else 'NoData',
+      execErrState: if std.objectHas(rule, 'execErrState') && rule.execErrState != null then rule.execErrState else 'Alerting',
+      'for': if std.objectHas(rule, 'for') && rule.pendingPeriod != null then rule.pendingPeriod else defaultEvalConfig.pendingPeriod,
+      keepFiringFor: if std.objectHas(rule, 'keepFiringFor') && rule.keepFiringFor != null then rule.keepFiringFor else defaultEvalConfig.keepFiringFor,
+      annotations: rule.annotations,
+      labels: teamConfig.labels + rule.labels,
+      folderUID: if std.objectHas(rule, 'folderUid') && rule.folderUid != null then rule.folderUid else teamConfig.folderUid,
+      notification_settings: {
+        receiver: if std.objectHas(rule, 'contactPoint') && rule.contactPoint != null 
+             then rule.contactPoint 
+             else teamConfig.contactPoint
+      },
+    } for rule in alertRules
   ];
 
-  alertUtils.createAlertRuleGroup(
-    title=mergedConfig.title,
-    folderUid=mergedConfig.folderUid,
-    interval=mergedConfig.interval,
-    rules=rules
+  alertUtils.createOrUpdateAlertRuleGroup(
+    title=title,
+    folderUid=folderUid,
+    interval=interval,
+    rules=rules,
   );
 
+// Export the createAlertGroup function
 {
   createAlertRuleGroup: createAlertRuleGroup
 }

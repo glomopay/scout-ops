@@ -1,0 +1,143 @@
+[
+   {
+      "apiVersion": "grizzly.grafana.com/v1alpha1",
+      "kind": "AlertRuleGroup",
+      "metadata": {
+         "name": "beybgvo5u3i0wb.per5MinuteEval"
+      },
+      "spec": {
+         "folderUid": "beybgvo5u3i0wb",
+         "interval": 300,
+         "rules": [
+            {
+               "annotations": {
+                  "description": "Web server average response time has been above 500ms for more than 5 minutes.",
+                  "runbook_url": "https://example.com/runbooks/web-server-latency",
+                  "summary": "Web server response time is high in stage environment"
+               },
+               "condition": "C",
+               "data": [
+                  {
+                     "datasourceUid": "ds-scout-altinity-ch",
+                     "model": {
+                        "database": "oteldemo1",
+                        "datasource": {
+                           "type": "vertamedia-clickhouse-datasource",
+                           "uid": "ds-scout-altinity-ch"
+                        },
+                        "dateTimeColDataType": "TimeUnix",
+                        "dateTimeType": "DATETIME64",
+                        "format": "time_series",
+                        "interval": 300,
+                        "query": "SELECT\n  $timeSeries AS t,\n  ResourceAttributes['service.name'] AS service,\n  avg(Value) AS response_time_ms\nFROM\n  stable\nWHERE\n  $timeFilter\n  AND MetricName = 'http.server.duration'\n  AND ResourceAttributes['service.name'] = 'web-server'\n  AND ResourceAttributes['environment'] = 'stage'\nGROUP BY\n  t, service\nORDER BY t\n",
+                        "rawQuery": true,
+                        "relativeTimeRange": {
+                           "from": 600,
+                           "to": 0
+                        },
+                        "table": "otel_metrics_gauge"
+                     },
+                     "queryType": "",
+                     "refId": "A",
+                     "relativeTimeRange": {
+                        "from": 300,
+                        "to": 0
+                     }
+                  },
+                  {
+                     "datasourceUid": "__expr__",
+                     "model": {
+                        "conditions": [
+                           {
+                              "evaluator": {
+                                 "params": [ ],
+                                 "type": "gt"
+                              },
+                              "operator": {
+                                 "type": "and"
+                              },
+                              "query": {
+                                 "params": [
+                                    "B"
+                                 ]
+                              },
+                              "reducer": {
+                                 "params": [ ],
+                                 "type": "last"
+                              },
+                              "type": "query"
+                           }
+                        ],
+                        "datasource": {
+                           "type": "__expr__",
+                           "uid": "__expr__"
+                        },
+                        "expression": "A",
+                        "intervalMs": 1000,
+                        "maxDataPoints": 43200,
+                        "reducer": "last",
+                        "refId": "B",
+                        "type": "reduce"
+                     },
+                     "refId": "B"
+                  },
+                  {
+                     "datasourceUid": "__expr__",
+                     "model": {
+                        "conditions": [
+                           {
+                              "evaluator": {
+                                 "params": [
+                                    500
+                                 ],
+                                 "type": "gt"
+                              },
+                              "operator": {
+                                 "type": "and"
+                              },
+                              "query": {
+                                 "params": [
+                                    "C"
+                                 ]
+                              },
+                              "reducer": {
+                                 "params": [ ],
+                                 "type": "last"
+                              },
+                              "type": "query"
+                           }
+                        ],
+                        "datasource": {
+                           "type": "__expr__",
+                           "uid": "__expr__"
+                        },
+                        "expression": "B",
+                        "intervalMs": 1000,
+                        "maxDataPoints": 43200,
+                        "refId": "C",
+                        "type": "threshold"
+                     },
+                     "refId": "C"
+                  }
+               ],
+               "execErrState": "Alerting",
+               "folderUID": "beybgvo5u3i0wb",
+               "for": "5m",
+               "keepFiringFor": "",
+               "labels": {
+                  "env": "stage",
+                  "severity": "warning",
+                  "team": "devops"
+               },
+               "noDataState": "NoData",
+               "notification_settings": {
+                  "receiver": "grafana-default-email"
+               },
+               "ruleGroup": "per5MinuteEval",
+               "title": "Web Server High Response Time - Stage"
+            }
+         ],
+         "title": "per5MinuteEval"
+      }
+   }
+]

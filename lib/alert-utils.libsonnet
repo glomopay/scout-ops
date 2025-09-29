@@ -1,7 +1,7 @@
-local createAlertRuleGroup(
+local createOrUpdateAlertRuleGroup(
   title,
   folderUid,
-  interval
+  interval,
   rules=[],
 ) = {
   apiVersion: 'grizzly.grafana.com/v1alpha1',
@@ -11,46 +11,12 @@ local createAlertRuleGroup(
   },
   spec: {
     interval: interval,
-    title: title,
     rules: rules,
     folderUid: folderUid,
+    title: title,
   },
 };
 
-
-local makeAlert(
-  title,
-  data,
-  folderUid,
-  pendingPeriod,
-  keepFiringFor,
-  ruleGroup='',
-  labels,
-  annotations,
-  noDataState='NoData',
-  execErrState='Error',
-  condition='C',
-  summary='',
-  description='',
-  runbookURL='',
-  customAnnotations={},
-  orgId=1
-) = {
-  title: title,
-  condition: condition,
-  'for': pendingPeriod,
-  keepFiringFor: keepFiringFor,
-  noDataState: noDataState,
-  execErrState: execErrState,
-  orgId: orgId,
-  ruleGroup: ruleGroup,
-  data: data,
-  folderUid: folderUid,
-  labels: labels,
-  annotations: annotations,
-};
-
 {
-  createAlertRuleGroup: createAlertRuleGroup,
-  makeAlert: makeAlert,
+  createOrUpdateAlertRuleGroup: createOrUpdateAlertRuleGroup,
 }

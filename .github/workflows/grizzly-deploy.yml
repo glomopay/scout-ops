@@ -1,4 +1,4 @@
-name: Grizzly Grafana Deployment
+name: Grizzly Alert Management
 
 on:
   workflow_dispatch:
@@ -11,56 +11,83 @@ on:
         options:
           - diff
           - apply
-  push:
-    branches: [ main ]
-    paths:
-      - 'resources/**'
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'stage'
+        type: choice
+        options:
+          - stage
+          - prod
+      team:
+        description: 'Team name'
+        required: true
+        default: 'platform'
+        type: string
+      service:
+        description: 'Service/Resource name'
+        required: false
+        default: 'api-gateway'
+        type: string
+
+env:
+  GRAFANA_URL: ${{ secrets.GRAFANA_URL }}
+  GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
 
 permissions:
   contents: read
+  secrets: read
 
 jobs:
-  diff:
-    if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'diff')
+  grizzly-alerts:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{github.ref }}
 
-      - name: Setup Grizzly
-        uses: grafana/setup-grizzly@v0.1.0
-        with:
-          version: 'v0.7.1'
-          grafana_url: ${{ vars.GRAFANA_URL }}
-          grafana_user: admin
-          grafana_token: ${{ secrets.GRIZZLY_GRAFANA_TOKEN }}
-
-      - name: Show diff
+      - name: Install Grizzly
         run: |
-          grr diff ./resources/
+          curl -fsSL https://github.com/grafana/grizzly/releases/latest/download/grr-linux-amd64 -o grr
+          chmod +x grr
+          sudo mv grr /usr/local/bin/
 
-  apply:
-    if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply') ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/main')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{github.ref }}
+      - name: Install jsonnet
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jsonnet
 
-      - name: Setup Grizzly
-        uses: grafana/setup-grizzly@v0.1.0
-        with:
-          version: 'v0.7.1'
-          grafana_url: ${{ vars.GRAFANA_URL }}
-          grafana_user: admin
-          grafana_token: ${{ secrets.GRIZZLY_GRAFANA_TOKEN }}
+      - name: Set workflow variables
+        run: |
+          echo "ACTION=${{ github.event.inputs.action }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          echo "TEAM=${{ github.event.inputs.team }}" >> $GITHUB_ENV
+          echo "SERVICE=${{ github.event.inputs.service }}" >> $GITHUB_ENV
+
+      - name: Generate Grizzly resources
+        run: |
+          echo "Generating resources for:"
+          echo "  Environment: $ENVIRONMENT"
+          echo "  Team: $TEAM"
+          echo "  Service: $SERVICE"
+          echo "  Action: $ACTION"
+
+          make generate ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
+
+      - name: Show generated resources
+        run: |
+          echo "=== GENERATED RESOURCES ==="
+          cat resources.json
+
+      - name: Preview changes (diff)
+        if: env.ACTION == 'diff' && github.ref != "refs/heads/main"
+        run: |
+          echo "=== GRIZZLY DIFF ==="
+          make diff ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
 
       - name: Apply changes
+        if: env.ACTION == 'apply' && github.ref == "refs/heads/main"
         run: |
-          grr apply --output=json --continue-on-error ./resources
+          echo "=== GRIZZLY APPLY ==="
+          make apply ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
+          echo "=== CHANGES APPLIED ==="
