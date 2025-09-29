@@ -83,13 +83,13 @@ jobs:
           cat resources.json
 
       - name: Preview changes (diff)
-        if: env.ACTION == 'diff' && github.ref != "refs/heads/main"
+        if: env.ACTION == 'diff' && github.ref != refs/heads/main
         run: |
           echo "=== GRIZZLY DIFF ==="
           make diff ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
 
       - name: Apply changes
-        if: env.ACTION == 'apply' && github.ref == "refs/heads/main"
+        if: env.ACTION == 'apply' && github.ref == refs/heads/main
         run: |
           echo "=== GRIZZLY APPLY ==="
           make apply ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
