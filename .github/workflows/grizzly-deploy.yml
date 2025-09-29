@@ -22,13 +22,17 @@ on:
       team:
         description: 'Team name'
         required: true
-        default: 'platform'
-        type: string
+        default: 'devops'
+        type: choice
+        options:
+          - devops
       service:
         description: 'Service/Resource name'
-        required: false
-        default: 'api-gateway'
-        type: string
+        required: true
+        default: 'web-server'
+        type: choice
+        options:
+          - web-server
 
 env:
   GRAFANA_URL: ${{ secrets.GRAFANA_URL }}
@@ -36,7 +40,6 @@ env:
 
 permissions:
   contents: read
-  secrets: read
 
 jobs:
   grizzly-alerts:
