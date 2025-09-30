@@ -55,6 +55,11 @@ jobs:
           chmod +x grr
           sudo mv grr /usr/local/bin/
 
+      - name: Configure Grizzly
+        run: |
+            make config
+            
+
       - name: Install jsonnet
         run: |
           sudo apt-get update
