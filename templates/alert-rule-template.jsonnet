@@ -1,36 +1,12 @@
 local alertUtils = import '../lib/alert-utils.libsonnet';
+local defaultConfig = import '../configs/alerts.libsonnet';
 
-// Default evaluation configuration
-local defaultEvalConfig = {
-  interval: 60, 
-  pendingPeriod: '5m', 
-  keepFiringFor: '', 
-};
-
-// Default data query configuration
-local defaultDataConfig = {
-  database: 'oteldemo1',
-  datasource: {
-    type: "vertamedia-clickhouse-datasource",
-    uid: "ds-scout-altinity-ch"
-  }
-};
-
-// Default evaluator configuration
-local defaultEvaluator = {
-  type: 'gt',
-  params: []
-};
-
-local defaultReducer = {
-  type: 'last',
-  params: []
-};
-
-local defaultRelativeTimeRange = {
-  from: 300,
-  to: 0
-};
+// Import default configurations
+local defaultEvalConfig = defaultConfig.defaultEvalConfig;
+local defaultDataConfig = defaultConfig.defaultDataConfig;
+local defaultEvaluator = defaultConfig.defaultEvaluator;
+local defaultReducer = defaultConfig.defaultReducer;
+local defaultRelativeTimeRange = defaultConfig.defaultRelativeTimeRange;
 
 // Template function that creates alert rule groups from config
 local createAlertRuleGroup(title, folderUid, alertRules, interval=300, teamConfig = null) =
@@ -46,11 +22,14 @@ local createAlertRuleGroup(title, folderUid, alertRules, interval=300, teamConfi
           relativeTimeRange: defaultRelativeTimeRange,
           datasourceUid: defaultDataConfig.datasource.uid,
           model: {
+            adHocFilters: [],
+            adHocValuesQuery: "",
+            add_metadata: true,
+            contextWindowSize: "10",
+            extrapolate: true,
             database: defaultDataConfig.database  ,
             datasource: defaultDataConfig.datasource,
-            rawQuery: true,
             query: rule.query,
-            interval: interval,
             relativeTimeRange: if std.objectHas(rule, 'relativeTimeRange') && rule.relativeTimeRange != null then rule.relativeTimeRange else defaultRelativeTimeRange,
             dateTimeColDataType: rule.dateTimeColDataType,
             dateTimeType: rule.dateTimeType,

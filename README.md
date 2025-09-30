@@ -157,9 +157,7 @@ The project comes with pre-configured defaults that you don't need to worry abou
 | **DateTime Column** | `dateTimeColDataType` | `TimeUnix` | Default timestamp column format |
 | **DateTime Type** | `dateTimeType` | `DATETIME64` | ClickHouse datetime type |
 
-These defaults ensure consistency across all teams and reduce setup complexity.
-You can override any of these defaults in your `alerts.jsonnet` file by specifying the corresponding field:
-
+These defaults are centrally managed in the `configs/alerts.libsonnet` file and ensure consistency across all teams and reduce setup complexity. You can override any of these defaults in your `alerts.jsonnet` file by specifying the corresponding field:
 
 
 ## Best Practices

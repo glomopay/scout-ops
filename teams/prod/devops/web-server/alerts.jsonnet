@@ -26,7 +26,7 @@ local alertGroups = [
         ResourceAttributes['service.name'] AS service,
         avg(Value) AS response_time_ms
       FROM
-        stable
+        $table
       WHERE
         $timeFilter
         AND MetricName = 'http.server.duration'
