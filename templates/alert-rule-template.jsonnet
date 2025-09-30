@@ -56,6 +56,7 @@ local createAlertRuleGroup(title, folderUid, alertRules, interval=300, teamConfi
             dateTimeType: rule.dateTimeType,
             format: rule.format,
             table: rule.table,
+            refId: 'A'
           }
         },
         {
@@ -109,7 +110,7 @@ local createAlertRuleGroup(title, folderUid, alertRules, interval=300, teamConfi
       'for': if std.objectHas(rule, 'for') && rule.pendingPeriod != null then rule.pendingPeriod else defaultEvalConfig.pendingPeriod,
       keepFiringFor: if std.objectHas(rule, 'keepFiringFor') && rule.keepFiringFor != null then rule.keepFiringFor else defaultEvalConfig.keepFiringFor,
       annotations: rule.annotations,
-      labels: teamConfig.labels + rule.labels,
+      labels: if std.objectHas(teamConfig, 'labels') && teamConfig.labels != null then teamConfig.labels else {} + if std.objectHas(rule, 'labels') && rule.labels != null then rule.labels else {},
       folderUID: if std.objectHas(rule, 'folderUid') && rule.folderUid != null then rule.folderUid else teamConfig.folderUid,
       notification_settings: {
         receiver: if std.objectHas(rule, 'contactPoint') && rule.contactPoint != null 
