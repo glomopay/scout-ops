@@ -35,7 +35,7 @@ alertTemplate.createAlertRuleGroup(
   title=alertGroup.name,
   folderUid=folderUid,
   alertRules= alertGroup.alertRules,
-  interval=300,
+  interval=alertGroup.interval,
   teamConfig=teamConfig
 )
 
