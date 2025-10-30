@@ -26,14 +26,13 @@ local teamConfig = getTeamConfig(environment, team);
 local importedResource = std.parseJson(std.extVar('ALERT_CONFIGS'));
 
 // Get config from team
-local folderUid = teamConfig.folderUid;
 local contactPoint = teamConfig.contactPoint;
 
 // Create Grizzly AlertRuleGroup using alert template
 [
 alertTemplate.createAlertRuleGroup(
   title=alertGroup.name,
-  folderUid=folderUid,
+  folderUid= if std.objectHas(alertGroup, 'folderUid') && alertGroup.folderUid != null then alertGroup.folderUid else teamConfig.folderUid,
   alertRules= alertGroup.alertRules,
   interval=alertGroup.interval,
   teamConfig=teamConfig

@@ -4,6 +4,7 @@ local alertGroups = [
 {
   name: 'per5MinuteEval',
   interval: 300,
+  folderUid: 'beu35l1zpl7uoa',
   alertRules: [
   {
     title: "Web Server High Response Time - Stage",
@@ -36,7 +37,6 @@ local alertGroups = [
         t, service
       ORDER BY t
     |||,
-    folderUid: 'beybgvo5u3i0wb'
   },
 ]
 }
