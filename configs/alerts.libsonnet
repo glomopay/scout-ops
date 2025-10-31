@@ -8,7 +8,7 @@
 
   // Default data query configuration
   defaultDataConfig: {
-    database: 'oteldemo1',
+    database: 'glomopay',
     datasource: {
       type: 'vertamedia-clickhouse-datasource',
       uid: 'ds-scout-altinity-ch',

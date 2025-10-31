@@ -5,11 +5,11 @@ local alertGroups = [
   folderUid: 'cf2ok0qyq5ipsd',
   alertRules: [
   {
-    title: "High CPU Utilization",
+    title: "High CPU Utilization - Staging",
     labels: { severity: "critical" },
     evaluator: { type: "gt", params: [85] },
     annotations: {
-      summary: "High CPU Utilization",
+      summary: "High CPU Utilization - Staging",
       description: "CPU Utilization has been above 85% for more than 5 minutes."
     },
     relativeTimeRange: { from: 600, to: 0 },
