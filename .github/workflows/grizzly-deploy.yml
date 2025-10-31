@@ -1,38 +1,11 @@
-name: Grizzly Grafana deploy
+name: Grizzly Grafana Deploy
 
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      action:
-        description: 'Action to perform'
-        required: true
-        default: 'diff'
-        type: choice
-        options:
-          - diff
-          - apply
-      environment:
-        description: 'Environment'
-        required: true
-        default: 'stage'
-        type: choice
-        options:
-          - stage
-          - prod
-      team:
-        description: 'Team name'
-        required: true
-        default: 'devops'
-        type: choice
-        options:
-          - devops
-      service:
-        description: 'Service/Resource name'
-        required: true
-        default: 'web-server'
-        type: choice
-        options:
-          - web-server
 
 env:
   GRAFANA_URL: ${{ vars.GRAFANA_URL }}
@@ -42,60 +15,173 @@ permissions:
   contents: read
 
 jobs:
-  grizzly-alerts:
+  detect-changes:
+    name: Detect changed directories
     runs-on: ubuntu-latest
+    outputs:
+      changed_paths: ${{ steps.detect.outputs.changed_paths }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect changed directories
+        id: detect
+        shell: bash
+        run: |
+          set -e
+    
+          echo "=== Detecting changed paths ==="
+    
+          # Determine base and head commits based on event type
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          elif [ "${{ github.event_name }}" == "push" ]; then
+            BASE_SHA="${{ github.event.before }}"
+            HEAD_SHA="${{ github.sha }}"
+          else
+            BASE_SHA="HEAD~1"
+            HEAD_SHA="HEAD"
+          fi
+
+          echo "Comparing: $BASE_SHA → $HEAD_SHA"
+
+          ALL_CHANGED=$(git diff --name-only $BASE_SHA $HEAD_SHA | grep -E '^teams/' || echo "")
+    
+          if [ -z "$ALL_CHANGED" ]; then
+            echo "No changes in teams/ directory"
+            echo "changed_paths=[]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+    
+          echo "Changed files:"
+          echo "$ALL_CHANGED"
+    
+          # Check if any config.jsonnet changed (don't fail if none)
+          HAS_CONFIG=$(echo "$ALL_CHANGED" | grep 'config\.jsonnet$' || echo "")
+    
+          if [ -n "$HAS_CONFIG" ]; then
+            echo "Config detected - deploying all services in affected teams"
+      
+          # Get unique team paths (teams/env/team) from config files that still exist
+          TEAM_PATHS=$(echo "$ALL_CHANGED" | grep 'config\.jsonnet$' | cut -d'/' -f1-3 | sort -u || echo "")
+      
+          # Find all services under those teams
+          PATHS=""
+          for team_path in $TEAM_PATHS; do
+            if [ -d "$team_path" ]; then
+              SERVICES=$(find "$team_path" -mindepth 1 -maxdepth 1 -type d || echo "")
+              if [ -n "$SERVICES" ]; then
+                PATHS="$PATHS"$'\n'"$SERVICES"
+              fi
+            else
+              echo "Skipping deleted team path: $team_path"
+            fi
+          done
+      
+          NON_CONFIG=$(echo "$ALL_CHANGED" | grep -v 'config\.jsonnet$' | cut -d'/' -f1-4 | sort -u || echo "")
+          if [ -n "$NON_CONFIG" ]; then
+            PATHS="$PATHS"$'\n'"$NON_CONFIG"
+          fi
+      
+          else
+            echo "No config changes - deploying only changed services"
+            PATHS=$(echo "$ALL_CHANGED" | cut -d'/' -f1-4 | sort -u || echo "")
+          fi
+
+          # Remove empty lines and duplicates
+          PATHS_UNIQUE=$(echo "$PATHS" | grep -E '^teams/' | sort -u || echo "")
+    
+          # Filter out deleted/non-existent directories
+          FINAL_PATHS=""
+          while IFS= read -r path; do
+          [ -z "$path" ] && continue
+      
+          if [ -d "$path" ]; then
+            FINAL_PATHS="$FINAL_PATHS"$'\n'"$path"
+          else
+            echo "Skipping deleted/non-existent path: $path"
+          fi
+          done <<< "$PATHS_UNIQUE"
+    
+          # Clean up
+          FINAL_PATHS=$(echo "$FINAL_PATHS" | grep -v '^$' | sort -u || echo "")
+    
+          if [ -z "$FINAL_PATHS" ]; then
+            echo "No valid service paths found (all paths may have been deleted)"
+            echo "changed_paths=[]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+    
+          echo "Services to deploy:"
+          echo "$FINAL_PATHS"
+
+          # Convert to JSON
+          CHANGED_JSON=$(echo "$FINAL_PATHS" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+          echo "changed_paths=$CHANGED_JSON" >> "$GITHUB_OUTPUT"
+      - name: Debug output
+        run: |
+          echo "Detected paths JSON: ${{ steps.detect.outputs.changed_paths }}"
+
+  grizzly-deploy:
+    name: Deploy Grizzly resources
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.changed_paths != '[]' && needs.detect-changes.outputs.changed_paths != '' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        path: ${{ fromJson(needs.detect-changes.outputs.changed_paths) }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Grizzly
+      - name: Install dependencies
         run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq make jsonnet
           curl -fsSL https://github.com/grafana/grizzly/releases/latest/download/grr-linux-amd64 -o grr
           chmod +x grr
           sudo mv grr /usr/local/bin/
 
+      - name: Extract variables from path
+        id: extract
+        run: |
+          echo "Extracting details from path: ${{ matrix.path }}"
+          
+          # Split path: teams/prod/devops/web-server
+          ENVIRONMENT=$(echo "${{ matrix.path }}" | cut -d'/' -f2)
+          TEAM=$(echo "${{ matrix.path }}" | cut -d'/' -f3)
+          SERVICE=$(echo "${{ matrix.path }}" | cut -d'/' -f4)
+
+          # Validate extraction
+          if [ -z "$ENVIRONMENT" ] || [ -z "$TEAM" ] || [ -z "$SERVICE" ]; then
+            echo "Error: Failed to extract environment, team, or service from path"
+            exit 1
+          fi
+
+          echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_ENV
+          echo "TEAM=$TEAM" >> $GITHUB_ENV
+          echo "SERVICE=$SERVICE" >> $GITHUB_ENV
+
+          echo "Environment: $ENVIRONMENT"
+          echo "Team: $TEAM"
+          echo "Service: $SERVICE"
+
       - name: Configure Grizzly
-        run: |
-            make config
-            
-
-      - name: Install jsonnet
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jsonnet
-
-      - name: Set workflow variables
-        run: |
-          echo "ACTION=${{ github.event.inputs.action }}" >> $GITHUB_ENV
-          echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
-          echo "TEAM=${{ github.event.inputs.team }}" >> $GITHUB_ENV
-          echo "SERVICE=${{ github.event.inputs.service }}" >> $GITHUB_ENV
+        run: make config
 
       - name: Generate Grizzly resources
-        run: |
-          echo "Generating resources for:"
-          echo "  Environment: $ENVIRONMENT"
-          echo "  Team: $TEAM"
-          echo "  Service: $SERVICE"
-          echo "  Action: $ACTION"
+        run: make generate ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
 
-          make generate ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
+      - name: Diff changes
+        run: make diff ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
 
-      - name: Show generated resources
-        run: |
-          echo "=== GENERATED RESOURCES ==="
-          cat resources.json
-
-      - name: Preview changes (diff)
-        if: ${{ env.ACTION == 'diff'}}
-        run: |
-          echo "=== GRIZZLY DIFF ==="
-          make diff ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
-
-      - name: Apply changes
-        if: ${{ env.ACTION == 'apply' && github.ref == 'refs/heads/main' }}
-        run: |
-          echo "=== GRIZZLY APPLY ==="
-          make apply ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
-          echo "=== CHANGES APPLIED ==="
+      - name: Apply changes (only on main)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: make apply ENVIRONMENT="$ENVIRONMENT" TEAM="$TEAM" SERVICE="$SERVICE"
